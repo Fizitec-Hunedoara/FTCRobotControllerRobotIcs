@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 //import org.opencv.core.Scalar;
 @Config
-public class Parametri {
+public class                                                                                                    Parametri {
     public enum DetectionTypes {
         DAY_BLUE,
         NIGHT_BLUE,
@@ -19,5 +19,5 @@ public class Parametri {
     public static int CV_kernel_pult_size = 5, Webcam_w = 640, Webcam_h = 480, CV_rect_x1 = 0, CV_rect_y1 = 0, CV_rect_x2 = 640, CV_rect_y2 = 480;
     public static DetectionTypes CV_detectionType = DetectionTypes.DAY_BLUE;
 
-    public static double pslider = 0.01, islider = 0.00001, dslider = 0.1;
+    public static double pslider = 0.008, islider = 0.00001, dslider = 0.001;
 }
