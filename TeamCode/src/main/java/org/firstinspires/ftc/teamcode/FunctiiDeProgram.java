@@ -100,10 +100,19 @@ public class FunctiiDeProgram{
         motorFL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        /*motorFR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        motorBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);*/
+        motorFR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        motorFL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     }
 
     public synchronized void POWER(double df1, double sf1, double ds1, double ss1) {

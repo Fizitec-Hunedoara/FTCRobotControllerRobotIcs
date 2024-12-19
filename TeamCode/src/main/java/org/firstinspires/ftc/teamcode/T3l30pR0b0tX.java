@@ -196,6 +196,7 @@ public class T3l30pR0b0tX extends OpMode {
             }
         }
     });
+
     public void stop(){stop = true;}
 
     @Override
@@ -207,7 +208,10 @@ public class T3l30pR0b0tX extends OpMode {
         telemetry.addData("setpoint:",pid.getSetpoint());
         telemetry.addData("senzor L: ",func.touchL.isPressed());
         telemetry.addData("senzor R: ",func.touchR.isPressed());
-
+        telemetry.addData("motorFL:",func.motorFL.getCurrentPosition());
+        telemetry.addData("motorBL:",func.motorBL.getCurrentPosition());
+        telemetry.addData("motorFR:",func.motorFR.getCurrentPosition());
+        telemetry.addData("motorBR:",func.motorBR.getCurrentPosition());
         telemetry.update();
     }
     public void POWER(double df1, double sf1, double ds1, double ss1){

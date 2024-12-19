@@ -101,7 +101,7 @@ public class pididk extends OpMode {
                     drive.setWeightedDrivePower(
                             new Pose2d(
                                     -gamepad1.left_stick_y,
-                                    gamepad1.left_stick_x,
+                                    -gamepad1.left_stick_x,
                                     -gamepad1.right_stick_x
                             )
                     );
@@ -287,7 +287,6 @@ public class pididk extends OpMode {
         telemetry.addData("poz extindere 2", func.extindere2.getPosition());
         telemetry.addData("poz extindere 1", func.extindere1.getPosition());
         telemetry.addData("extins2", extins2);
-
         telemetry.addData("sliderR",func.sliderR.getCurrentPosition());
 //        telemetry.addData("joystick ",gamepad2.left_stick_y);
 //        telemetry.addData("slider r pow ", func.sliderR.getPower());
