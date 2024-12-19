@@ -40,6 +40,7 @@ public class FunctiiDeProgram{
     private DistanceSensor distanceL, distanceR;
     private boolean sasiuInited;
     private boolean isStopRequested = false;
+    public double gherutaPoz = 0.15;
 
     public void init(HardwareMap hard){
         this.init(hard, null, false);
@@ -116,6 +117,87 @@ public class FunctiiDeProgram{
             throw new NullPointerException("Bro sasiul nu e initializat");
         }
     }
+    public void ansamblul_leleseana(int poz1,int pow,double tolerance){
+
+        if (poz1 > sliderR.getCurrentPosition()){
+            while (sliderR.getCurrentPosition() < poz1 && !isStopRequested){
+                sliderR.setPower(pow);
+                sliderL.setPower(pow);
+            }
+
+        }
+        else {
+            while (sliderR.getCurrentPosition()>poz1 + tolerance && !isStopRequested ){
+                sliderR.setVelocity(-pow);
+                sliderR.setVelocity(-pow);
+            }
+        }
+
+//            while (slider1.getCurrentPosition() > poz1 || slider1.getCurrentPosition() < poz1 + tolerance){
+//                slider2.setVelocity(-vel);
+//                slider1.setVelocity(-vel);
+//            }
+        sliderR.setPower(0);
+        sliderL.setPower(0);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //SpateStanga.setPosition(poz_servo_st);
+        //SpateDreapta.setPosition(poz_servo_dr);
+//        sliderR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+//        sliderL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        ceva = true;
+    }
+
+    public  void pule_lule(int poz1,int vel,double tolerance){
+
+        if (poz1 > incheieturaBrat.getCurrentPosition()){
+            while (incheieturaBrat.getCurrentPosition() < poz1 && !isStopRequested){
+                incheieturaBrat.setVelocity(vel);
+            }
+
+        }
+        else {
+            while (incheieturaBrat.getCurrentPosition()>poz1 + tolerance && !isStopRequested ){
+                incheieturaBrat.setVelocity(-vel);
+            }
+        }
+
+//            while (slider1.getCurrentPosition() > poz1 || slider1.getCurrentPosition() < poz1 + tolerance){
+//                slider2.setVelocity(-vel);
+//                slider1.setVelocity(-vel);
+//            }
+        incheieturaBrat.setVelocity(0);
+
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //SpateStanga.setPosition(poz_servo_st);
+        //SpateDreapta.setPosition(poz_servo_dr);
+        incheieturaBrat.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public synchronized void targetSlider(double poz, double pow, double t, int tolerance) {
         automatizare = true;
         if (sliderR.getCurrentPosition() < poz) {
@@ -135,6 +217,21 @@ public class FunctiiDeProgram{
         sliderL.setPower(0);
         ceva = true;
     }
+    public synchronized void targetSliderJos(double poz, double pow, double t, int tolerance) {
+        automatizare = true;
+
+        sliderL.setPower(pow);
+        sliderR.setPower(pow);
+
+        double lastTime = System.currentTimeMillis();
+        while (!isStopRequested
+                && lastTime + t > System.currentTimeMillis()
+                && !(touchL.isPressed() || touchR.isPressed())) {
+        }
+        sliderR.setPower(0);
+        sliderL.setPower(0);
+        //ceva = true;
+    }
     public synchronized void target(double poz, double vel, DcMotorEx motor, double t, int tolerance) {
         if (motor.getCurrentPosition() < poz) {
             motor.setVelocity(vel);
@@ -151,24 +248,66 @@ public class FunctiiDeProgram{
         ceva = true;
     }
     public void deschidere(){
-        gheruta.setPosition(0.45);
+        //gheruta.setPosition(0.45);
+        gherutaPoz = 0.45;
     }
     public void inchidere(){
-        gheruta.setPosition(0.2);
-    }
-    public void inchidereTight(){
         gheruta.setPosition(0.15);
     }
     public void getSpecimen(){
-        target(570,3000,incheieturaBrat,5000,10);
-        articulatorGrabber.setPosition(0.65);
+        Thread t1 = new Thread(() -> {
+            if (incheieturaBrat.getCurrentPosition() < 500){
+                //target(570,3000,incheieturaBrat,5000,10);
+                pule_lule(570,3000,10);
+            }
+            else
+                pule_lule(590,2000,10);
+            articulatorGrabber.setPosition(0.65);
+        });
+        t1.start();
+        if (sliderR.getCurrentPosition() > 100)
+         targetSliderJos(0,0.5,5000,10);
+
+
+
         deschidere();
     }
+    public void chill(){
+        Thread t2 = new Thread(() -> {
+            pule_lule(580,2000,10);
+            articulatorGrabber.setPosition(0.45);
+        });
+        t2.start();
+        if (sliderR.getCurrentPosition()>100)
+            targetSliderJos(0,0.5,5000,10);
+
+
+
+    }
     public void putSpecimenOnBar(){
-        inchidereTight();
+
+        //target(1350,5000,incheieturaBrat,5000,10);
+        Thread t3 = new Thread(() -> {
+            pule_lule(1420,2000,10);
+
+        });
+        t3.start();
+        gherutaPoz = 0.15;
         articulatorGrabber.setPosition(0.85);
-        target(1450,5000,incheieturaBrat,5000,10);
-        targetSlider(600,1,5000,10);
+        //targetSlider(600,1,5000,10);
+        //ansamblul_leleseana(450,-1,10);
+
+    }
+    public void skibidi_dop_dop_dop(){
+        Thread t4 = new Thread(() -> {
+            pule_lule(1420,3000,10);
+        });
+        t4.start();
+        articulatorGrabber.setPosition(0.7);
+        ansamblul_leleseana(1000,-1,5);
+
+
+
     }
     public void kdf(long t) {
         long lastTime = System.currentTimeMillis();

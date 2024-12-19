@@ -3,27 +3,23 @@ De asemenea, daca ceva da eroare in cod si nu stii de ce, verifica mai intai dac
  */
 package org.firstinspires.ftc.teamcode;
 
-import static java.lang.Math.abs;
+
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import java.util.List;
+
 import static org.firstinspires.ftc.teamcode.Parametri.dslider;
 import static org.firstinspires.ftc.teamcode.Parametri.islider;
 import static org.firstinspires.ftc.teamcode.Parametri.pslider;
-import java.util.concurrent.TimeUnit;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*@TeleOp face ca programul sa apara in configuratia driver hub-ului/telefonului cu aplicatia de driver station, in partea de TeleOp. */
@@ -56,7 +52,7 @@ public class pididk extends OpMode {
     double pozArticulatorGrabber = 0.9;
     double ghearaPosition = 0.2;
     long lastTime,lastTimeR,lastTimeL;
-    int extins1=0,extins2=0;
+    boolean extins1=false,extins2=false;
 
     boolean roni = false, mure = false, andrei= false, jupanu = false, maia = false;
     boolean ok, ok2;
@@ -96,54 +92,74 @@ public class pididk extends OpMode {
     private final Thread Chassis = new Thread(new Runnable() {
         @Override
         public void run(){
+            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             /*Thread-urile nu vor rula la infinit fara acest while, ci vor rula numai o data. Asta este foarte folositor pentru Telecomandat, dar fara while se pot face thread-uri pentru autonom in unele cazuri*/
             while(!stop) {
+
+                    drive.setWeightedDrivePower(
+                            new Pose2d(
+                                    -gamepad1.left_stick_y,
+                                    gamepad1.left_stick_x,
+                                    -gamepad1.right_stick_x
+                            )
+                    );
+
+                    drive.update();
+
+                    //Pose2d poseEstimate = drive.getPoseEstimate();
+//                    telemetry.addData("x", poseEstimate.getX());
+//                    telemetry.addData("y", poseEstimate.getY());
+//                    telemetry.addData("heading", poseEstimate.getHeading());
+//                    telemetry.update();
+
 //                /* Liniile astea de cod iau input-ul controller-ului si il pun in niste variabile*/
-                y = -gamepad1.left_stick_y;
-                x = gamepad1.left_stick_x;
-                rx = gamepad1.right_stick_x;
-
-                /* Liniile astea de cod iau niste variabile care reprezinta puterea fiecarui motor, cu ajutorul puterilor de la controller*/
-                pmotorFL = (y + x + rx);
-                pmotorBL = (y - x + rx);
-                pmotorBR = (y + x - rx);
-                pmotorFR = (y - x - rx);
-
-                /*Secventele urmatoare de cod stabilesc maximul dintre modulele puterilor motoarelor cu un anumit scop...*/
-                max = abs(pmotorFL);
-                if (abs(pmotorFR) > max) {
-                    max = abs(pmotorFR);
-                }
-                if (abs(pmotorBL) > max) {
-                    max = abs(pmotorBL);
-                }
-                if (abs(pmotorBR) > max) {
-                    max = abs(pmotorBR);
-                }
-                /*...care este punerea tuturor puterilor motoarelor sub 1, cum puterile de la motoare pot fi numai intre 1 si -1*/
-                if (max > 1) {
-                    pmotorFL /= max;
-                    pmotorFR /= max;
-                    pmotorBL /= max;
-                    pmotorBR /= max;
-                }
-                /*Aici se apeleaza functia de putere cu puterile calculate anterior ale motoarelor, si le imparte la o valoare ca robotul sa se miste cu diferite viteze.*/
-                //SLOW-MOTION
-//                if (gamepad1.left_trigger>0) {
-//                    sm = 1;
-//                    POWER(pmotorFR / sm, pmotorFL / sm, pmotorBR / sm, pmotorBL / sm);
-//                    //arm.setPower(poz/sm);
-//                } else {
-//                    //SLOWER-MOTION
-//                    if (gamepad1.right_trigger>0) {
-//                        sm = 2;
-//                        POWER(pmotorFR / sm, pmotorFL / sm, pmotorBR / sm, pmotorBL / sm);
-//                    } else {
-//                        sm = 1;
-//                        POWER(pmotorFR / sm, pmotorFL / sm, pmotorBR / sm, pmotorBL / sm);
-//                    }
+//                y = -gamepad1.left_stick_y;
+//                x = gamepad1.left_stick_x;
+//                rx = gamepad1.right_stick_x;
+//
+//                /* Liniile astea de cod iau niste variabile care reprezinta puterea fiecarui motor, cu ajutorul puterilor de la controller*/
+//                pmotorFL = (y + x + rx);
+//                pmotorBL = (y - x + rx);
+//                pmotorBR = (y + x - rx);
+//                pmotorFR = (y - x - rx);
+//
+//                /*Secventele urmatoare de cod stabilesc maximul dintre modulele puterilor motoarelor cu un anumit scop...*/
+//                max = abs(pmotorFL);
+//                if (abs(pmotorFR) > max) {
+//                    max = abs(pmotorFR);
 //                }
-                POWER(pmotorFR, pmotorFL, pmotorBR, pmotorBL);
+//                if (abs(pmotorBL) > max) {
+//                    max = abs(pmotorBL);
+//                }
+//                if (abs(pmotorBR) > max) {
+//                    max = abs(pmotorBR);
+//                }
+//                /*...care este punerea tuturor puterilor motoarelor sub 1, cum puterile de la motoare pot fi numai intre 1 si -1*/
+//                if (max > 1) {
+//                    pmotorFL /= max;
+//                    pmotorFR /= max;
+//                    pmotorBL /= max;
+//                    pmotorBR /= max;
+//                }
+//                /*Aici se apeleaza functia de putere cu puterile calculate anterior ale motoarelor, si le imparte la o valoare ca robotul sa se miste cu diferite viteze.*/
+//                //SLOW-MOTION
+////                if (gamepad1.left_trigger>0) {
+////                    sm = 1;
+////                    POWER(pmotorFR / sm, pmotorFL / sm, pmotorBR / sm, pmotorBL / sm);
+////                    //arm.setPower(poz/sm);
+////                } else {
+////                    //SLOWER-MOTION
+////                    if (gamepad1.right_trigger>0) {
+////                        sm = 2;
+////                        POWER(pmotorFR / sm, pmotorFL / sm, pmotorBR / sm, pmotorBL / sm);
+////                    } else {
+////                        sm = 1;
+////                        POWER(pmotorFR / sm, pmotorFL / sm, pmotorBR / sm, pmotorBL / sm);
+////                    }
+////                }
+//                POWER(pmotorFR, pmotorFL, pmotorBR, pmotorBL);
             }
         }
     });
@@ -159,8 +175,15 @@ public class pididk extends OpMode {
                 //func.sliderR.setPower(gamepad2.left_stick_y);
                 //func.sliderL.setPower(gamepad2.left_stick_y);
                 if (gamepad2.left_stick_y != 0.0) {
-                    func.sliderR.setPower(gamepad2.left_stick_y);
-                    func.sliderL.setPower(gamepad2.left_stick_y);
+                    if (gamepad2.left_stick_y > 0.1){
+                        func.sliderR.setPower(gamepad2.left_stick_y * 0.4);
+                        func.sliderL.setPower(gamepad2.left_stick_y * 0.4);
+                    }
+                    else {
+                        func.sliderR.setPower(gamepad2.left_stick_y );
+                        func.sliderL.setPower(gamepad2.left_stick_y);
+                    }
+
                     func.ceva = true;
                 } else {
                     if (func.ceva) {
@@ -177,7 +200,7 @@ public class pididk extends OpMode {
                         func.sliderL.setPower(-pidResult);
                     }
                 }
-                func.incheieturaBrat.setPower(-gamepad2.right_stick_y);
+                func.incheieturaBrat.setPower(-gamepad2.right_stick_y * 0.6);
 
                 if (gamepad2.right_bumper) {
                     func.rotatieGrabber.setPosition(0.7);
@@ -189,26 +212,46 @@ public class pididk extends OpMode {
                     func.rotatieGrabber.setPosition(0.525);
                 }
 
-                if (gamepad2.right_trigger > 0.1) {
-                    func.deschidere();
+                if (gamepad2.a) {
+                    func.gherutaPoz = 0.45;
                 }
-                else if (gamepad2.left_trigger > 0.1) {
-                    func.inchidere();
+                else if (gamepad2.b) {
+                    func.gherutaPoz = 0.15;
                 }
+                func.gheruta.setPosition(func.gherutaPoz);
                 if (gamepad2.dpad_down) {
                     func.getSpecimen();
                 }
                 if (gamepad2.dpad_up) {
                     func.putSpecimenOnBar();
                 }
-                func.extindere1.setPosition(0.52 - extins1 * 0.32);
-                if (gamepad2.a) {
+                if(gamepad2.right_trigger > 0.1 && !extins2){
+                    extins2 = true;
+                    func.extindere2.setPosition(1);
+                    lastTime = System.currentTimeMillis();
+                    while (!stop && lastTime + 200 > System.currentTimeMillis()) {
+                    }
+                }
+                else if(gamepad2.right_trigger > 0.1 && extins2){
+                    func.extindere1.setPosition(0.2);
+                    extins1 = true;
+                }
+                if(gamepad2.left_trigger > 0.1 && extins2){
+                    func.extindere2.setPosition(0.49);
+                    extins2 = false;
+                    lastTime = System.currentTimeMillis();
+                    while (!stop && lastTime + 200 > System.currentTimeMillis()) {
+                    }
+                }
+                else if(gamepad2.left_trigger > 0.1 && !extins2){
+                    func.extindere1.setPosition(0.52);
+                }
+               /* if (gamepad2.a) {
                     extins2 = 0;
                 }
                 else if (gamepad2.b) {
                     extins2 = 1;
-                }
-                func.extindere2.setPosition(0.49 + 0.51 * extins2);
+                }*/
                 /*if (gamepad2.dpad_up) {
                     func.extindere1.setPosition(0.52);
                 } else if (gamepad2.dpad_down) {
@@ -216,10 +259,10 @@ public class pididk extends OpMode {
                 }*/
 
                 if (gamepad2.dpad_right) {
-                    func.articulatorGrabber.setPosition(0.9);
+                    func.chill();
                 }
                 else if (gamepad2.dpad_left) {
-                    func.articulatorGrabber.setPosition(0.1);
+                    func.skibidi_dop_dop_dop();
                 }
             }
         }
@@ -235,18 +278,21 @@ public class pididk extends OpMode {
     public void loop() {
         /*Exemplu de telemetrie, in care Hotel este scrisul dinainte, si trivago este valoarea, care este un string cu numele trivago :)))))*/
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
-        telemetry.addData("error", pid.getError());
-        telemetry.addData("p", pid.getP());
-        telemetry.addData("d", pid.getD());
-        telemetry.addData("i", pid.getI());
+//        telemetry.addData("error", pid.getError());
+//        telemetry.addData("p", pid.getP());
+//        telemetry.addData("d", pid.getD());
+//        telemetry.addData("i", pid.getI());
         telemetry.addData("taci stanga", func.touchL.isPressed());
         telemetry.addData("taci dreapta", func.touchR.isPressed());
-        telemetry.addData("poz servo", poz_artic);
+        telemetry.addData("poz extindere 2", func.extindere2.getPosition());
+        telemetry.addData("poz extindere 1", func.extindere1.getPosition());
+        telemetry.addData("extins2", extins2);
+
         telemetry.addData("sliderR",func.sliderR.getCurrentPosition());
-        telemetry.addData("joystick ",gamepad2.left_stick_y);
-        telemetry.addData("slider r pow ", func.sliderR.getPower());
-        telemetry.addData("slider l pow ",func.sliderL.getPower());
-        telemetry.addData("gheruta poz:",func.gheruta.getPosition());
+//        telemetry.addData("joystick ",gamepad2.left_stick_y);
+//        telemetry.addData("slider r pow ", func.sliderR.getPower());
+//        telemetry.addData("slider l pow ",func.sliderL.getPower());
+//        telemetry.addData("gheruta poz:",func.gheruta.getPosition());
         // telemetry.addData("distanta 1", distanta1.getDistance(DistanceUnit.MM));
         //  telemetry.addData("distanta 2", distanta2.getDistance(DistanceUnit.MM));
         telemetry.addData("brat", func.incheieturaBrat.getCurrentPosition());
