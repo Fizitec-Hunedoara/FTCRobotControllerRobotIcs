@@ -212,6 +212,7 @@ public class T3l30pR0b0tX extends OpMode {
         telemetry.addData("motorBL:",func.motorBL.getCurrentPosition());
         telemetry.addData("motorFR:",func.motorFR.getCurrentPosition());
         telemetry.addData("motorBR:",func.motorBR.getCurrentPosition());
+        telemetry.addData("brat:",func.incheieturaBrat.getCurrentPosition());
         telemetry.update();
     }
     public void POWER(double df1, double sf1, double ds1, double ss1){

@@ -1,6 +1,3 @@
-/* La inceputul programului, exista import-urile. Ele se fac de obicei automat asa ca nu te ingrijora de ele numai daca dau eroare(Nu au dat niciodata lol).
-De asemenea, daca ceva da eroare in cod si nu stii de ce, verifica mai intai daca este importata chestia sau nu.
- */
 package org.firstinspires.ftc.teamcode;
 
 
@@ -30,7 +27,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
   Linia de cod va da eroare dupa ce o scrii, doar apasa pe cod, apasa pe beculetul rosu si apoi apasa pe implement methods, asta va importa functiile de init si loop.
   Functia de init se declanseaza numai o data, dar cea de loop se repeta incontinuu si este locul unde se pun functiile care misca robotul in general, sau face telemetrie in cazul asta.
  */
-public class pididk extends OpMode {
+public class pididkincercare extends OpMode {
     /* DcMotor este un tip de variabila cu care se declara motoarele, dar DcMotorEx este aceeasi chestie, doar cu mai multe functii*/
     public DcMotorEx motorBR,motorBL,motorFL,motorFR;
     double sm = 1;
@@ -97,17 +94,17 @@ public class pididk extends OpMode {
             drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             /*Thread-urile nu vor rula la infinit fara acest while, ci vor rula numai o data. Asta este foarte folositor pentru Telecomandat, dar fara while se pot face thread-uri pentru autonom in unele cazuri*/
             while(!stop) {
-                    drive.setWeightedDrivePower(
-                            new Pose2d(
-                                    -gamepad1.left_stick_y,
-                                    -gamepad1.left_stick_x,
-                                    -gamepad1.right_stick_x
-                            )
-                    );
+                drive.setWeightedDrivePower(
+                        new Pose2d(
+                                -gamepad1.left_stick_y,
+                                -gamepad1.left_stick_x,
+                                -gamepad1.right_stick_x
+                        )
+                );
 
-                    drive.update();
+                drive.update();
 
-                    //Pose2d poseEstimate = drive.getPoseEstimate();
+                //Pose2d poseEstimate = drive.getPoseEstimate();
 //                    telemetry.addData("x", poseEstimate.getX());
 //                    telemetry.addData("y", poseEstimate.getY());
 //                    telemetry.addData("heading", poseEstimate.getHeading());
@@ -169,39 +166,34 @@ public class pididk extends OpMode {
         public void run(){
             pid.enable();
 
-            while (!stop){
-                pid.setPID(pslider, islider, dslider);
-                //func.sliderR.setPower(gamepad2.left_stick_y);
-                //func.sliderL.setPower(gamepad2.left_stick_y);
-                if (gamepad2.left_stick_y != 0.0) {
-                    if (gamepad2.left_stick_y > 0.1){
-                        func.sliderR.setPower(gamepad2.left_stick_y * 0.4);
-                        func.sliderL.setPower(gamepad2.left_stick_y * 0.4);
-                    }
-                    else {
-                        func.sliderR.setPower(gamepad2.left_stick_y );
-                        func.sliderL.setPower(gamepad2.left_stick_y);
+
+                while (!stop){
+                    pid.setPID(pslider, islider, dslider);
+
+                    // Slider control (optimized)
+                    double sliderPower = gamepad2.left_stick_y;
+                    if (sliderPower != 0.0) {
+                        if (sliderPower > 0.1) {
+                            sliderPower *= 0.4;
+                        }
+                        func.sliderR.setPower(sliderPower);
+                        func.sliderL.setPower(sliderPower);
+                        func.ceva = true;
+                    } else {
+                        if (func.ceva) {
+                            func.ceva = false;
+                            pid.setSetpoint(func.sliderR.getCurrentPosition());
+                        }
+                        sliderPower = (func.touchL.isPressed() || func.touchR.isPressed()) ? 0 : -pid.performPID(func.sliderR.getCurrentPosition());
+                        func.sliderR.setPower(sliderPower);
+                        func.sliderL.setPower(sliderPower);
                     }
 
-                    func.ceva = true;
-                } else {
-                    if (func.ceva) {
-                        func.ceva = false;
-                        pid.setSetpoint(func.sliderR.getCurrentPosition());
-                    }
-                    if(func.touchL.isPressed() || func.touchR.isPressed()){
-                        func.sliderR.setPower(0);
-                        func.sliderL.setPower(0);
-                    }
-                    else {
-                        pidResult = pid.performPID(func.sliderR.getCurrentPosition());
-                        func.sliderR.setPower(-pidResult);
-                        func.sliderL.setPower(-pidResult);
-                    }
-                }
-                func.incheieturaBrat.setPower(-gamepad2.right_stick_y * 0.6);
+                    func.incheieturaBrat.setPower(-gamepad2.right_stick_y * 0.6);
 
-                if (gamepad2.right_bumper) {
+                    // Rotatie Grabber control (optimized with a single if-else)
+
+                    if (gamepad2.right_bumper) {
                     func.rotatieGrabber.setPosition(0.7);
                 }
                 else if (gamepad2.left_bumper) {
