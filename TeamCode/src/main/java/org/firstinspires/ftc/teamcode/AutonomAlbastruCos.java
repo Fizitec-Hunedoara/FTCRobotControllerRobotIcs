@@ -35,7 +35,7 @@ public class AutonomAlbastruCos extends LinearOpMode {
                 .build();
         drive.followTrajectorySequence(ts2);
         func.deschidere();
-        func.extins = false;
+        func.extins = true;
     }
     private final Thread Systems = new Thread(new Runnable() {
         @Override
@@ -52,12 +52,15 @@ public class AutonomAlbastruCos extends LinearOpMode {
                     pidResult = pid.performPID(func.sliderR.getCurrentPosition());
                     func.sliderR.setPower(-pidResult);
                     func.sliderL.setPower(-pidResult);
+
                 }
                 func.gheruta.setPosition(func.gherutaPoz);
                 if(func.extins){
                     func.extindere1.setPosition(0.2);
                     func.extindere2.setPosition(0.9);
                 }
+
+
             }
         }
     });

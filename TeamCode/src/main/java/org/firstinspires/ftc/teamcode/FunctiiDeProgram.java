@@ -42,6 +42,8 @@ public class FunctiiDeProgram{
     private boolean isStopRequested = false;
     public double gherutaPoz = 0.15,sliderTargetPoz = 0;
     LinearOpMode opMode;
+    public ExtensorState extensorState = ExtensorState.RETRACTED;
+
     public FunctiiDeProgram(){}
     public FunctiiDeProgram(LinearOpMode opmode){
         this.opMode = opmode;
@@ -78,8 +80,8 @@ public class FunctiiDeProgram{
         sliderR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         incheieturaBrat.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        sliderR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        incheieturaBrat.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+//        sliderR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+//        incheieturaBrat.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         sliderL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         sliderR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -355,11 +357,14 @@ public class FunctiiDeProgram{
             }
             else
                 pule_lule(590,2000,10);
-            articulatorGrabber.setPosition(0.65);
         });
         t1.start();
-        if (sliderR.getCurrentPosition() > 100)
-         targetSliderJos(0,0.5,5000,10);
+        Thread t2 = new Thread(() -> {
+            if (sliderR.getCurrentPosition() > 100)
+                targetSliderJos(0,0.5,5000,10);
+        });
+        t2.start();
+        articulatorGrabber.setPosition(0.65);
         deschidere();
     }
     public void getSpecimen_auto(){
@@ -378,13 +383,17 @@ public class FunctiiDeProgram{
         deschidere();
     }
     public void chill(){
-        Thread t2 = new Thread(() -> {
+        Thread t1 = new Thread(() -> {
             pule_lule(580,2000,10);
             articulatorGrabber.setPosition(0.45);
         });
+        t1.start();
+
+        Thread t2 = new Thread (() -> {
+            if (sliderR.getCurrentPosition()>100)
+                targetSliderJos(0,0.5,5000,10);
+        });
         t2.start();
-        if (sliderR.getCurrentPosition()>100)
-            targetSliderJos(0,0.5,5000,10);
     }
     public void chill_auto(){
         Thread t2 = new Thread(() -> {
@@ -403,7 +412,7 @@ public class FunctiiDeProgram{
 
         });
         t3.start();
-        gherutaPoz = 0.15;
+        inchidere();
         articulatorGrabber.setPosition(0.85);
         //targetSlider(600,1,5000,10);
         //ansamblul_leleseana(450,-1,10);
@@ -430,12 +439,17 @@ public class FunctiiDeProgram{
         articulatorGrabber.setPosition(poz);
     }
     public void skibidi_dop_dop_dop(){
-        Thread t4 = new Thread(() -> {
+        Thread t1 = new Thread(() -> {
             pule_lule(1420,3000,10);
         });
-        t4.start();
+        t1.start();
+
+        Thread t2 = new Thread(() -> {
+            ansamblul_leleseana(1000,-1,5);
+        });
+        t2.start();
+
         articulatorGrabber.setPosition(0.7);
-        ansamblul_leleseana(1000,-1,5);
     }
     public void skibidi_dop_dop_dop_auto(){
         automatizare = true;
@@ -458,5 +472,22 @@ public class FunctiiDeProgram{
     public void kdf_auto(long t) {
         long lastTime = System.currentTimeMillis();
         while (lastTime + t > System.currentTimeMillis() && opMode.opModeIsActive());
+    }
+
+    public void doExtensor() {
+        switch (extensorState){
+            case RETRACTED:
+                extindere1.setPosition(0.52);
+                extindere2.setPosition(0.49);
+                break;
+            case HALF_EXTENDED:
+                extindere1.setPosition(0.2);
+                extindere2.setPosition(0.49);
+                break;
+            case FULL_EXTENDED:
+                extindere1.setPosition(0.2);
+                extindere2.setPosition(1);
+                break;
+        }
     }
 }

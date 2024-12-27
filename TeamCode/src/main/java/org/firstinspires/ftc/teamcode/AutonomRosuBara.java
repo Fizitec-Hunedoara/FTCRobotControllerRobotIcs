@@ -23,7 +23,7 @@ public class AutonomRosuBara extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         func.init(hardwareMap,telemetry,false);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d startPose = new Pose2d(15.0393700787, -61.0236220472, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(15.0393700787, -59.2236220472, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         waitForStart();
         Systems.start();
