@@ -23,7 +23,7 @@ import static org.firstinspires.ftc.teamcode.Parametri.pslider;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*@TeleOp face ca programul sa apara in configuratia driver hub-ului/telefonului cu aplicatia de driver station, in partea de TeleOp. */
-@TeleOp
+//@TeleOp
 /*Linia asta de cod incepe cu numele programului(FoundationTeleOp) si la sfarsitul liniei este tipul de program:
     OpMode = TeleOp
     LinearOpMode = Autonom

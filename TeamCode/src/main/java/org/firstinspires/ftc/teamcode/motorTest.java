@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 
-@TeleOp
+//@TeleOp
 public class motorTest extends OpMode {
     public DcMotorEx sliderL, sliderR, incheieturaBrat;
 

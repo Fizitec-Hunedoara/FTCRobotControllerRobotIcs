@@ -2,12 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.abs;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,16 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class FunctiiDeProgram{
     TouchSensor touchL,touchR;
@@ -40,7 +29,7 @@ public class FunctiiDeProgram{
     private DistanceSensor distanceL, distanceR;
     private boolean sasiuInited;
     private boolean isStopRequested = false;
-    public double gherutaPoz = 0.15,sliderTargetPoz = 0;
+    public double gherutaPoz = 0.15,sliderTargetPoz = 0,pozArticulatorGrabber = 0.1;
     LinearOpMode opMode;
     public ExtensorState extensorState = ExtensorState.RETRACTED;
 
@@ -124,18 +113,16 @@ public class FunctiiDeProgram{
         }
     }
     public void ansamblul_leleseana(int poz1,int pow,double tolerance){
-
         if (poz1 > sliderR.getCurrentPosition()){
             while (sliderR.getCurrentPosition() < poz1 && !isStopRequested){
                 sliderR.setPower(pow);
                 sliderL.setPower(pow);
             }
-
         }
         else {
-            while (sliderR.getCurrentPosition()>poz1 + tolerance && !isStopRequested ){
-                sliderR.setVelocity(-pow);
-                sliderR.setVelocity(-pow);
+            while (sliderR.getCurrentPosition()>poz1 + tolerance && !isStopRequested){
+                sliderR.setPower(-pow);
+                sliderL.setPower(-pow);
             }
         }
 
@@ -261,6 +248,7 @@ public class FunctiiDeProgram{
         }
         sliderR.setPower(0);
         sliderL.setPower(0);
+        automatizare = false;
         ceva = true;
     }
     public synchronized void targetSlider_auto(double poz, double pow, double t, int tolerance) {
@@ -350,13 +338,15 @@ public class FunctiiDeProgram{
         gherutaPoz = 0.15;
     }
     public void getSpecimen(){
+        pozArticulatorGrabber = 0.65;
+        articulatorGrabber.setPosition(pozArticulatorGrabber);
         Thread t1 = new Thread(() -> {
             if (incheieturaBrat.getCurrentPosition() < 500){
-                //target(570,3000,incheieturaBrat,5000,10);
-                pule_lule(570,3000,10);
+                target(-1200,3000,incheieturaBrat,5000,10);
+                //pule_lule(570,3000,10);
             }
             else
-                pule_lule(590,2000,10);
+                target(-1200,3000,incheieturaBrat,5000,10);
         });
         t1.start();
         Thread t2 = new Thread(() -> {
@@ -364,8 +354,8 @@ public class FunctiiDeProgram{
                 targetSliderJos(0,0.5,5000,10);
         });
         t2.start();
-        articulatorGrabber.setPosition(0.65);
         deschidere();
+        kdf(1000);
     }
     public void getSpecimen_auto(){
         Thread t1 = new Thread(() -> {
@@ -407,35 +397,37 @@ public class FunctiiDeProgram{
     public void putSpecimenOnBar(){
 
         //target(1350,5000,incheieturaBrat,5000,10);
+        pozArticulatorGrabber = 0.85;
+        articulatorGrabber.setPosition(0.85);
         Thread t3 = new Thread(() -> {
-            pule_lule(1420,2000,10);
-
+            target(950,2000,incheieturaBrat,5000,10);
         });
         t3.start();
-        inchidere();
-        articulatorGrabber.setPosition(0.85);
-        //targetSlider(600,1,5000,10);
-        //ansamblul_leleseana(450,-1,10);
-
+        kdf(1000);
+        /*Thread t4 = new Thread(() -> {
+            targetSlider(600,1,5000,10);
+        });
+        t4.start();
+        kdf(2000);*/
     }
     public void putSpecimenOnBar_auto(){
 
         //target(1350,5000,incheieturaBrat,5000,10);
         if(opMode.opModeIsActive()) {
-            Thread t3 = new Thread(() -> {
-                target_auto(415, 5000, incheieturaBrat,5000,10);
-            });
-            t3.start();
             gherutaPoz = 0.15;
             articulatorGrabber.setPosition(0);
             kdf_auto(100);
             articulatorGrabber.setPosition(0.85);
+            Thread t3 = new Thread(() -> {
+                target_auto(950, 2000, incheieturaBrat,5000,10);
+            });
+            t3.start();
         }
         //ansamblul_leleseana(450,-1,10);
     }
     public void setArticulatorPoz(double poz){
-        articulatorGrabber.setPosition(0);
-        kdf_auto(10);
+        /*articulatorGrabber.setPosition(0);
+        kdf_auto(10);*/
         articulatorGrabber.setPosition(poz);
     }
     public void skibidi_dop_dop_dop(){
@@ -451,19 +443,20 @@ public class FunctiiDeProgram{
 
         articulatorGrabber.setPosition(0.7);
     }
-    public void skibidi_dop_dop_dop_auto(){
+    public void pus_in_cos_auto(){
+        target_auto(1100,5000,incheieturaBrat,5000,10);
         automatizare = true;
         ansamblul_leleseana_auto(1600,-1,5);
         sliderTargetPoz = 1600;
         automatizare = false;
-        initExtins = true;
-        target_auto(600,5000,incheieturaBrat,5000,10);
+        extins = true;
         setArticulatorPoz(1);
-        kdf_auto(1000);
+        kdf_auto(1500);
         deschidere();
+        kdf_auto(500);
         extins = false;
-        sliderTargetPoz = 3000;
-        target_auto(100,5000,incheieturaBrat,5000,10);
+        sliderTargetPoz = 0;
+        target_auto(0,5000,incheieturaBrat,5000,10);
     }
     public void kdf(long t) {
         long lastTime = System.currentTimeMillis();

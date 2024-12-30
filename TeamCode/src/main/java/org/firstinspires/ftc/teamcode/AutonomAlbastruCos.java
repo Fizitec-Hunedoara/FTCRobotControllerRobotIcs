@@ -25,10 +25,10 @@ public class AutonomAlbastruCos extends LinearOpMode {
         waitForStart();
         Systems.start();
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(54,54,Math.toRadians(225)))
+                .lineToLinearHeading(new Pose2d(55,55,Math.toRadians(225)))
                 .build();
         drive.followTrajectorySequence(ts);
-        func.skibidi_dop_dop_dop_auto();
+        func.pus_in_cos_auto();
         func.kdf_auto(500);
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(51,51,Math.toRadians(225)))
@@ -41,13 +41,13 @@ public class AutonomAlbastruCos extends LinearOpMode {
         @Override
         public void run(){
             pid.enable();
-            while (opModeIsActive()){
+            while (opModeIsActive()) {
                 pid.setPID(pslider, islider, dslider);
-                if(func.touchL.isPressed() || func.touchR.isPressed()){
+                if (func.touchL.isPressed() || func.touchR.isPressed()) {
                     func.sliderR.setPower(0);
                     func.sliderL.setPower(0);
                 }
-                else if(!func.automatizare){
+                else if (!func.automatizare) {
                     pid.setSetpoint(func.sliderTargetPoz);
                     pidResult = pid.performPID(func.sliderR.getCurrentPosition());
                     func.sliderR.setPower(-pidResult);
@@ -55,12 +55,14 @@ public class AutonomAlbastruCos extends LinearOpMode {
 
                 }
                 func.gheruta.setPosition(func.gherutaPoz);
-                if(func.extins){
+                if (func.extins) {
                     func.extindere1.setPosition(0.2);
                     func.extindere2.setPosition(0.9);
                 }
-
-
+                else{
+                    func.extindere1.setPosition(0.5);
+                    func.extindere2.setPosition(0.5);
+                }
             }
         }
     });

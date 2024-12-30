@@ -40,8 +40,7 @@ public class pididk extends OpMode {
     double y, x, rx;
     double max = 0.0;
     boolean stop = false;
-    public double pidResult;
-    double pozArticulatorGrabber = 0.9;
+    public double pidResult, pozArticulator = 0.0;
     double ghearaPosition = 0.2;
     long lastTime;
     boolean extins1 = false, extins2 = false;
@@ -144,7 +143,7 @@ public class pididk extends OpMode {
                     }
                     func.ceva = true;
                 }
-                else {
+                else if(!func.automatizare){
                     if (func.ceva) {
                         func.ceva = false;
                         pid.setSetpoint(func.sliderR.getCurrentPosition());
@@ -159,8 +158,8 @@ public class pididk extends OpMode {
                         func.sliderL.setPower(-pidResult);
                     }
                 }
-                func.incheieturaBrat.setPower(-gamepad2.right_stick_y * 0.6);
-
+                func.incheieturaBrat.setPower(-gamepad2.right_stick_y * 2);
+                func.articulatorGrabber.setPosition(func.pozArticulatorGrabber);
                 if (gamepad2.right_bumper) {
                     func.rotatieGrabber.setPosition(0.7);
                 }
@@ -177,14 +176,12 @@ public class pididk extends OpMode {
                 else if (gamepad2.b) {
                     func.inchidere();
                 }
-
                 if (gamepad2.dpad_down) {
                     func.getSpecimen();
                 }
                 if (gamepad2.dpad_up) {
                     func.putSpecimenOnBar();
                 }
-
                 func.gheruta.setPosition(func.gherutaPoz);
 
                 if(gamepad2.right_trigger > (0.5 + histInterval / 2.0)) {
@@ -249,6 +246,10 @@ public class pididk extends OpMode {
                 }
                 else if (gamepad2.dpad_left) {
                     func.skibidi_dop_dop_dop();
+                }
+                if(gamepad2.x){
+                    func.incheieturaBrat.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    func.incheieturaBrat.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
             }
         }

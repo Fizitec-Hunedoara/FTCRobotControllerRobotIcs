@@ -22,21 +22,42 @@ public class AutonomRosuCos extends LinearOpMode {
         Pose2d startPose = new Pose2d(-31.1591355599, -61.0236220472, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         waitForStart();
+        func.extins = true;
         Systems.start();
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-53,-53,Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(-56,-56,Math.toRadians(45)))
                 .build();
         drive.followTrajectorySequence(ts);
-        func.skibidi_dop_dop_dop_auto();
+        func.pus_in_cos_auto();
         func.kdf_auto(500);
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-51,-51,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-50,-46,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts2);
-        func.target_auto(-600,5000,func.incheieturaBrat,5000,10);
-        func.initExtins = true;
-        func.kdf(1000);
+        func.extins = true;
+        func.setArticulatorPoz(0.35);
+        func.kdf_auto(500);
+        func.target_auto(-1400,5000,func.incheieturaBrat,5000,10);
+        func.kdf_auto(500);
         func.inchidere();
+        func.kdf_auto(500);
+        drive.followTrajectorySequence(ts);
+        func.pus_in_cos_auto();
+        func.kdf_auto(500);
+        TrajectorySequence ts3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-60,-45.5,Math.toRadians(90)))
+                .build();
+        drive.followTrajectorySequence(ts3);
+        func.extins = true;
+        func.setArticulatorPoz(0.35);
+        func.kdf_auto(500);
+        func.target_auto(-1400,5000,func.incheieturaBrat,5000,10);
+        func.kdf_auto(500);
+        func.inchidere();
+        func.kdf_auto(500);
+        drive.followTrajectorySequence(ts);
+        func.pus_in_cos_auto();
+        func.kdf_auto(500);
     }
     private final Thread Systems = new Thread(new Runnable() {
         @Override
@@ -55,16 +76,15 @@ public class AutonomRosuCos extends LinearOpMode {
                     func.sliderL.setPower(-pidResult);
                 }
                 func.gheruta.setPosition(func.gherutaPoz);
-                if(func.initExtins){
-                    func.extindere1.setPosition(0.5);
-                    func.extindere2.setPosition(0.5);
-                    func.extins = true;
-                    func.initExtins = false;
-                }
                 if(func.extins){
                     func.extindere1.setPosition(0.2);
-                    func.extindere2.setPosition(0.9);
+                    func.extindere2.setPosition(1);
                 }
+                else{
+                    func.extindere1.setPosition(0.5);
+                    func.extindere2.setPosition(0.5);
+                }
+                func.rotatieGrabber.setPosition(0.525);
             }
         }
     });
