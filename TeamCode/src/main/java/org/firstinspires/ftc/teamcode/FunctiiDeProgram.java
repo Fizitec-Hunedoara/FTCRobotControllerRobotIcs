@@ -68,10 +68,10 @@ public class FunctiiDeProgram{
         sliderL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         sliderR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         incheieturaBrat.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-//        sliderR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-//        incheieturaBrat.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-
+        if(!shouldInitSasiu) {
+            sliderR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            incheieturaBrat.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        }
         sliderL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         sliderR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         incheieturaBrat.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -253,22 +253,23 @@ public class FunctiiDeProgram{
     }
     public synchronized void targetSlider_auto(double poz, double pow, double t, int tolerance) {
         automatizare = true;
+        double lastTime = System.currentTimeMillis();
         if (sliderR.getCurrentPosition() < poz) {
-            sliderR.setPower(-pow);
-            sliderL.setPower(-pow);
+            while(sliderR.getCurrentPosition() < poz - tolerance && opMode.opModeIsActive() && lastTime + t > System.currentTimeMillis()) {
+                sliderR.setPower(-pow);
+                sliderL.setPower(-pow);
+            }
         }
         else {
-            sliderL.setPower(pow);
-            sliderR.setPower(pow);
-        }
-        double lastTime = System.currentTimeMillis();
-        while (this.opMode.opModeIsActive()
-                && lastTime + t > System.currentTimeMillis()
-                && (abs(sliderR.getCurrentPosition() - poz) > tolerance)) {
+            while(sliderR.getCurrentPosition() > poz + tolerance && opMode.opModeIsActive() && lastTime + t > System.currentTimeMillis()) {
+                sliderL.setPower(pow);
+                sliderR.setPower(pow);
+            }
         }
         sliderR.setPower(0);
         sliderL.setPower(0);
-        ceva = true;
+        sliderTargetPoz = poz;
+        automatizare = false;
     }
     public synchronized void targetSliderJos(double poz, double pow, double t, int tolerance) {
         automatizare = true;
@@ -328,7 +329,6 @@ public class FunctiiDeProgram{
                 && (abs(motor.getCurrentPosition() - poz) > tolerance)) {
         }
         motor.setVelocity(0);
-        ceva = true;
     }
     public void deschidere(){
         //gheruta.setPosition(0.45);
@@ -358,23 +358,14 @@ public class FunctiiDeProgram{
         kdf(1000);
     }
     public void getSpecimen_auto(){
-        Thread t1 = new Thread(() -> {
-            if (incheieturaBrat.getCurrentPosition() < 500){
-                //target(570,3000,incheieturaBrat,5000,10);
-                pule_lule_auto(570,3000,10);
-            }
-            else
-                pule_lule_auto(590,2000,10);
-            articulatorGrabber.setPosition(0.65);
-        });
-        t1.start();
-        if (sliderR.getCurrentPosition() > 100)
-            targetSliderJos(0,0.5,5000,10);
+        targetSliderJos(0,0.5,5000,10);
+        target(-1300,3000,incheieturaBrat,5000,10);
+        pozArticulatorGrabber = 0.6;
         deschidere();
     }
     public void chill(){
         Thread t1 = new Thread(() -> {
-            pule_lule(580,2000,10);
+            target_auto(580,2000,incheieturaBrat,5000,10);
             articulatorGrabber.setPosition(0.45);
         });
         t1.start();
@@ -415,13 +406,8 @@ public class FunctiiDeProgram{
         //target(1350,5000,incheieturaBrat,5000,10);
         if(opMode.opModeIsActive()) {
             gherutaPoz = 0.15;
-            articulatorGrabber.setPosition(0);
-            kdf_auto(100);
-            articulatorGrabber.setPosition(0.85);
-            Thread t3 = new Thread(() -> {
-                target_auto(950, 2000, incheieturaBrat,5000,10);
-            });
-            t3.start();
+            pozArticulatorGrabber = 0.8;
+            target_auto(950, 2000, incheieturaBrat,5000,10);
         }
         //ansamblul_leleseana(450,-1,10);
     }
@@ -430,32 +416,38 @@ public class FunctiiDeProgram{
         kdf_auto(10);*/
         articulatorGrabber.setPosition(poz);
     }
-    public void skibidi_dop_dop_dop(){
+    public void pus_in_cos(){
         Thread t1 = new Thread(() -> {
-            pule_lule(1420,3000,10);
+            target_auto(1100,3000,incheieturaBrat,5000,10);
         });
         t1.start();
-
         Thread t2 = new Thread(() -> {
-            ansamblul_leleseana(1000,-1,5);
+            ansamblul_leleseana(1600,-1,5);
         });
         t2.start();
-
-        articulatorGrabber.setPosition(0.7);
+        setArticulatorPoz(1);
     }
     public void pus_in_cos_auto(){
-        target_auto(1100,5000,incheieturaBrat,5000,10);
-        automatizare = true;
-        ansamblul_leleseana_auto(1600,-1,5);
-        sliderTargetPoz = 1600;
-        automatizare = false;
-        extins = true;
-        setArticulatorPoz(1);
-        kdf_auto(1500);
+        target_auto(1200,5000,incheieturaBrat,5000,10);
+        targetSlider_auto(1500,1,5000,10);
+        articulatorGrabber.setPosition(1);
+        kdf_auto(500);
         deschidere();
+        kdf_auto(500);
+        articulatorGrabber.setPosition(0.5);
         kdf_auto(500);
         extins = false;
         sliderTargetPoz = 0;
+        target_auto(0,5000,incheieturaBrat,5000,10);
+    }
+    public void ia_de_jos(){
+        extins = true;
+        articulatorGrabber.setPosition(0.3);
+        kdf_auto(500);
+        target_auto(-1400,5000,incheieturaBrat,5000,10);
+        kdf_auto(500);
+        inchidere();
+        kdf_auto(500);
         target_auto(0,5000,incheieturaBrat,5000,10);
     }
     public void kdf(long t) {

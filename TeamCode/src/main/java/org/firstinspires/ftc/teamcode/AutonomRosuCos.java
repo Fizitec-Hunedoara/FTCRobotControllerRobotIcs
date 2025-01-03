@@ -22,6 +22,7 @@ public class AutonomRosuCos extends LinearOpMode {
         Pose2d startPose = new Pose2d(-31.1591355599, -61.0236220472, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         waitForStart();
+        func.articulatorGrabber.setPosition(0.5);
         func.extins = true;
         Systems.start();
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
@@ -34,27 +35,15 @@ public class AutonomRosuCos extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-50,-46,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts2);
-        func.extins = true;
-        func.setArticulatorPoz(0.35);
-        func.kdf_auto(500);
-        func.target_auto(-1400,5000,func.incheieturaBrat,5000,10);
-        func.kdf_auto(500);
-        func.inchidere();
-        func.kdf_auto(500);
+        func.ia_de_jos();
         drive.followTrajectorySequence(ts);
         func.pus_in_cos_auto();
         func.kdf_auto(500);
         TrajectorySequence ts3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-60,-45.5,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-60,-46,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts3);
-        func.extins = true;
-        func.setArticulatorPoz(0.35);
-        func.kdf_auto(500);
-        func.target_auto(-1400,5000,func.incheieturaBrat,5000,10);
-        func.kdf_auto(500);
-        func.inchidere();
-        func.kdf_auto(500);
+        func.ia_de_jos();
         drive.followTrajectorySequence(ts);
         func.pus_in_cos_auto();
         func.kdf_auto(500);
@@ -76,6 +65,7 @@ public class AutonomRosuCos extends LinearOpMode {
                     func.sliderL.setPower(-pidResult);
                 }
                 func.gheruta.setPosition(func.gherutaPoz);
+                //func.articulatorGrabber.setPosition(func.pozArticulatorGrabber);
                 if(func.extins){
                     func.extindere1.setPosition(0.2);
                     func.extindere2.setPosition(1);

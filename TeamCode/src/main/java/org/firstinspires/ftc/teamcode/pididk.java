@@ -245,7 +245,7 @@ public class pididk extends OpMode {
                     func.chill();
                 }
                 else if (gamepad2.dpad_left) {
-                    func.skibidi_dop_dop_dop();
+                    func.pus_in_cos();
                 }
                 if(gamepad2.x){
                     func.incheieturaBrat.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
