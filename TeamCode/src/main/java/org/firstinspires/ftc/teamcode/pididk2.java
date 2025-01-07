@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
   Linia de cod va da eroare dupa ce o scrii, doar apasa pe cod, apasa pe beculetul rosu si apoi apasa pe implement methods, asta va importa functiile de init si loop.
   Functia de init se declanseaza numai o data, dar cea de loop se repeta incontinuu si este locul unde se pun functiile care misca robotul in general, sau face telemetrie in cazul asta.
  */
-public class pididk extends OpMode {
+public class pididk2 extends OpMode {
     private final double slowSm = 0.4, fastSm = 1;
     private final double histInterval = 0.2;
     private boolean rtBool, ltBool, rtBoolLast = false, ltBoolLast = false;
@@ -158,6 +158,12 @@ public class pididk extends OpMode {
                 }
                 func.incheieturaBrat.setPower(-gamepad2.right_stick_y * 2);
                 func.articulatorGrabber.setPosition(func.pozArticulatorGrabber);
+                if(gamepad2.dpad_down){
+                    func.pozArticulatorGrabber = 0.6;
+                }
+                if(gamepad2.dpad_up){
+                    func.pozArticulatorGrabber = 0.75;
+                }
                 if (gamepad2.right_bumper) {
                     func.rotatieGrabber.setPosition(0.7);
                 }
@@ -173,12 +179,12 @@ public class pididk extends OpMode {
                 else if (gamepad2.b) {
                     func.inchidere();
                 }
-                if (gamepad2.dpad_down) {
+                /*if (gamepad2.dpad_down) {
                     func.getSpecimen();
                 }
                 if (gamepad2.dpad_up) {
                     func.putSpecimenOnBar();
-                }
+                }*/
                 func.gheruta.setPosition(func.gherutaPoz);
 
                 if(gamepad2.right_trigger > (0.5 + histInterval / 2.0)) {
@@ -238,12 +244,18 @@ public class pididk extends OpMode {
 
                 func.doExtensor();
 
-                if (gamepad2.dpad_right) {
+                /*if (gamepad2.dpad_right) {
                     func.ia_de_jos();
+                }*/
+                if(gamepad2.dpad_right){
+                    func.pozArticulatorGrabber = 0.3;
                 }
-                else if (gamepad2.dpad_left) {
+                if(gamepad2.dpad_left){
+                    func.pozArticulatorGrabber = 1;
+                }
+                /*else if (gamepad2.dpad_left) {
                     func.pus_in_cos();
-                }
+                }*/
                 if(gamepad2.x){
                     func.incheieturaBrat.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     func.incheieturaBrat.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -276,7 +288,6 @@ public class pididk extends OpMode {
         telemetry.addData("rtBoolean:", rtBool);
         telemetry.addData("ltBoolean:", ltBool);
         telemetry.addData("Extensor state:", func.extensorState);
-        telemetry.addData("battery voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
         telemetry.update();
     }
 }

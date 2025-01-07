@@ -271,7 +271,7 @@ public class FunctiiDeProgram{
         sliderTargetPoz = poz;
         automatizare = false;
     }
-    public synchronized void targetSliderJos(double poz, double pow, double t, int tolerance) {
+    public synchronized void targetSliderJos(double pow, double t) {
         automatizare = true;
 
         sliderL.setPower(pow);
@@ -286,47 +286,51 @@ public class FunctiiDeProgram{
         sliderL.setPower(0);
         //ceva = true;
     }
-    public synchronized void targetSliderJos_auto(double poz, double pow, double t, int tolerance) {
+    public synchronized void targetSliderJos_auto(double pow, double t) {
         automatizare = true;
-
-        sliderL.setPower(pow);
-        sliderR.setPower(pow);
-
         double lastTime = System.currentTimeMillis();
-        while (this.opMode.opModeIsActive()
-                && lastTime + t > System.currentTimeMillis()
-                && !(touchL.isPressed() || touchR.isPressed())) {
+        while(!touchR.isPressed() && !touchL.isPressed() && lastTime + t > System.currentTimeMillis() && opMode.opModeIsActive()) {
+            sliderL.setPower(pow);
+            sliderR.setPower(pow);
         }
         sliderR.setPower(0);
         sliderL.setPower(0);
+        sliderTargetPoz = 0;
+        automatizare = false;
         //ceva = true;
     }
     public synchronized void target(double poz, double vel, DcMotorEx motor, double t, int tolerance) {
+        double lastTime = System.currentTimeMillis();
         if (motor.getCurrentPosition() < poz) {
-            motor.setVelocity(vel);
+            while(!isStopRequested && motor.getCurrentPosition() < poz - tolerance && lastTime + t > System.currentTimeMillis()) {
+                motor.setVelocity(vel);
+            }
         }
         else {
-            motor.setVelocity(-vel);
-        }
-        double lastTime = System.currentTimeMillis();
-        while (!isStopRequested
-                && lastTime + t > System.currentTimeMillis()
-                && (abs(motor.getCurrentPosition() - poz) > tolerance)) {
+            while(!isStopRequested && motor.getCurrentPosition() > poz + tolerance && lastTime + t > System.currentTimeMillis()) {
+                motor.setVelocity(-vel);
+            }
         }
         motor.setVelocity(0);
         ceva = true;
     }
     public synchronized void target_auto(double poz, double vel, DcMotorEx motor, double t, int tolerance) {
+        double lastTime = System.currentTimeMillis();
         if (motor.getCurrentPosition() < poz) {
-            motor.setVelocity(vel);
+            if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
+                poz = poz * 0.9;
+            }
+            while(opMode.opModeIsActive() && motor.getCurrentPosition() < poz - tolerance && lastTime + t > System.currentTimeMillis()) {
+                motor.setVelocity(vel);
+            }
         }
         else {
-            motor.setVelocity(-vel);
-        }
-        double lastTime = System.currentTimeMillis();
-        while (this.opMode.opModeIsActive()
-                && lastTime + t > System.currentTimeMillis()
-                && (abs(motor.getCurrentPosition() - poz) > tolerance)) {
+            if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
+                poz = poz * 1.1;
+            }
+            while(opMode.opModeIsActive() && motor.getCurrentPosition() > poz + tolerance && lastTime + t > System.currentTimeMillis()) {
+                motor.setVelocity(-vel);
+            }
         }
         motor.setVelocity(0);
     }
@@ -338,41 +342,41 @@ public class FunctiiDeProgram{
         gherutaPoz = 0.15;
     }
     public void getSpecimen(){
-        pozArticulatorGrabber = 0.65;
+        pozArticulatorGrabber = 0.6;
         articulatorGrabber.setPosition(pozArticulatorGrabber);
         Thread t1 = new Thread(() -> {
             if (incheieturaBrat.getCurrentPosition() < 500){
-                target(-1200,3000,incheieturaBrat,5000,10);
+                target(-1270,3000,incheieturaBrat,5000,10);
                 //pule_lule(570,3000,10);
             }
             else
-                target(-1200,3000,incheieturaBrat,5000,10);
+                target(-1270,3000,incheieturaBrat,5000,10);
         });
         t1.start();
         Thread t2 = new Thread(() -> {
             if (sliderR.getCurrentPosition() > 100)
-                targetSliderJos(0,0.5,5000,10);
+                targetSliderJos(1,5000);
         });
         t2.start();
         deschidere();
-        kdf(1000);
     }
     public void getSpecimen_auto(){
-        targetSliderJos(0,0.5,5000,10);
-        target(-1300,3000,incheieturaBrat,5000,10);
+        targetSlider_auto(0,1,5000,10);
+        target_auto(-1270,3000,incheieturaBrat,5000,10);
         pozArticulatorGrabber = 0.6;
         deschidere();
     }
     public void chill(){
+        pozArticulatorGrabber = 0.45;
+        articulatorGrabber.setPosition(0.45);
         Thread t1 = new Thread(() -> {
-            target_auto(580,2000,incheieturaBrat,5000,10);
-            articulatorGrabber.setPosition(0.45);
+            target(580,2000,incheieturaBrat,5000,10);
+
         });
         t1.start();
-
         Thread t2 = new Thread (() -> {
             if (sliderR.getCurrentPosition()>100)
-                targetSliderJos(0,0.5,5000,10);
+                targetSliderJos(1,5000);
         });
         t2.start();
     }
@@ -383,18 +387,17 @@ public class FunctiiDeProgram{
         });
         t2.start();
         if (sliderR.getCurrentPosition()>100)
-            targetSliderJos_auto(0,0.5,5000,10);
+            targetSliderJos_auto(1,5000);
     }
     public void putSpecimenOnBar(){
 
         //target(1350,5000,incheieturaBrat,5000,10);
-        pozArticulatorGrabber = 0.85;
-        articulatorGrabber.setPosition(0.85);
+        pozArticulatorGrabber = 0.75;
+        articulatorGrabber.setPosition(0.75);
         Thread t3 = new Thread(() -> {
-            target(950,2000,incheieturaBrat,5000,10);
+            target(900,2000,incheieturaBrat,5000,10);
         });
         t3.start();
-        kdf(1000);
         /*Thread t4 = new Thread(() -> {
             targetSlider(600,1,5000,10);
         });
@@ -406,8 +409,10 @@ public class FunctiiDeProgram{
         //target(1350,5000,incheieturaBrat,5000,10);
         if(opMode.opModeIsActive()) {
             gherutaPoz = 0.15;
-            pozArticulatorGrabber = 0.8;
-            target_auto(950, 2000, incheieturaBrat,5000,10);
+            pozArticulatorGrabber = 0.75;
+            target_auto(800, 2000, incheieturaBrat,5000,10);
+            targetSlider_auto(750,1,5000,10);
+            deschidere();
         }
         //ansamblul_leleseana(450,-1,10);
     }
@@ -417,18 +422,19 @@ public class FunctiiDeProgram{
         articulatorGrabber.setPosition(poz);
     }
     public void pus_in_cos(){
+        pozArticulatorGrabber = 1;
+        setArticulatorPoz(1);
         Thread t1 = new Thread(() -> {
-            target_auto(1100,3000,incheieturaBrat,5000,10);
+            target(1200,5000,incheieturaBrat,5000,10);
         });
         t1.start();
         Thread t2 = new Thread(() -> {
-            ansamblul_leleseana(1600,-1,5);
+            targetSlider(1500,1,5000,10);
         });
         t2.start();
-        setArticulatorPoz(1);
     }
     public void pus_in_cos_auto(){
-        target_auto(1200,5000,incheieturaBrat,5000,10);
+        target_auto(1100,5000,incheieturaBrat,5000,10);
         targetSlider_auto(1500,1,5000,10);
         articulatorGrabber.setPosition(1);
         kdf_auto(500);
@@ -441,6 +447,20 @@ public class FunctiiDeProgram{
         target_auto(0,5000,incheieturaBrat,5000,10);
     }
     public void ia_de_jos(){
+        articulatorGrabber.setPosition(0.3);
+        pozArticulatorGrabber = 0.3;
+        Thread t1 = new Thread(() -> {
+            target(-1400, 5000, incheieturaBrat, 5000, 10);
+        });
+        t1.start();
+        if(sliderR.getCurrentPosition() > 100) {
+            Thread t2 = new Thread(() -> {
+                targetSlider(0, 1, 5000, 10);
+            });
+            t2.start();
+        }
+    }
+    public void ia_de_jos_auto(){
         extins = true;
         articulatorGrabber.setPosition(0.3);
         kdf_auto(500);

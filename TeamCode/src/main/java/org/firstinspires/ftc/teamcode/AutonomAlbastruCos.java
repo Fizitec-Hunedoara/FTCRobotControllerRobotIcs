@@ -15,7 +15,6 @@ public class AutonomAlbastruCos extends LinearOpMode {
     public Pid_Controller_Adevarat pid = new Pid_Controller_Adevarat(0, 0, 0);
     FunctiiDeProgram func = new FunctiiDeProgram(this);
     double pidResult;
-    boolean extins = false;
     @Override
     public void runOpMode() throws InterruptedException {
         func.init(hardwareMap,telemetry,false);
@@ -23,6 +22,8 @@ public class AutonomAlbastruCos extends LinearOpMode {
         Pose2d startPose = new Pose2d(31.1591355599, 61.0236220472, Math.toRadians(270));
         drive.setPoseEstimate(startPose);
         waitForStart();
+        func.articulatorGrabber.setPosition(0.5);
+        func.extins = true;
         Systems.start();
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(55,55,Math.toRadians(225)))
@@ -34,7 +35,7 @@ public class AutonomAlbastruCos extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(50,46,Math.toRadians(270)))
                 .build();
         drive.followTrajectorySequence(ts2);
-        func.ia_de_jos();
+        func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
         func.pus_in_cos_auto();
         func.kdf_auto(500);
@@ -42,7 +43,7 @@ public class AutonomAlbastruCos extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(60,46,Math.toRadians(270)))
                 .build();
         drive.followTrajectorySequence(ts3);
-        func.ia_de_jos();
+        func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
         func.pus_in_cos_auto();
         func.kdf_auto(500);

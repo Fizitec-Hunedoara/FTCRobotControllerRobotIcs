@@ -35,7 +35,7 @@ public class AutonomRosuCos extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-50,-46,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts2);
-        func.ia_de_jos();
+        func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
         func.pus_in_cos_auto();
         func.kdf_auto(500);
@@ -43,7 +43,7 @@ public class AutonomRosuCos extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-60,-46,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts3);
-        func.ia_de_jos();
+        func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
         func.pus_in_cos_auto();
         func.kdf_auto(500);
