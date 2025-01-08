@@ -26,10 +26,12 @@ public class AutonomRosuCos extends LinearOpMode {
         func.extins = true;
         Systems.start();
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-56,-56,Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(-55,-55,Math.toRadians(45)))
+                .addTemporalMarker(0,0,() -> new Thread(() -> {
+                    func.pus_in_cos_auto();
+                }).start())
                 .build();
         drive.followTrajectorySequence(ts);
-        func.pus_in_cos_auto();
         func.kdf_auto(500);
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(-50,-46,Math.toRadians(90)))
@@ -37,16 +39,14 @@ public class AutonomRosuCos extends LinearOpMode {
         drive.followTrajectorySequence(ts2);
         func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
-        func.pus_in_cos_auto();
-        func.kdf_auto(500);
+        func.kdf_auto(200);
         TrajectorySequence ts3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(-60,-46,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts3);
         func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
-        func.pus_in_cos_auto();
-        func.kdf_auto(500);
+        func.kdf_auto(5000);
     }
     private final Thread Systems = new Thread(new Runnable() {
         @Override

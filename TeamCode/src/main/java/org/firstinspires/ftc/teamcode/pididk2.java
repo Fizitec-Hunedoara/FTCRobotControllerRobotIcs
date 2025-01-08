@@ -106,9 +106,7 @@ public class pididk2 extends OpMode {
                     pmotorBL /= max;
                     pmotorBR /= max;
                 }
-
                 func.POWER(pmotorFR * sm, pmotorFL * sm, pmotorBR * sm, pmotorBL * sm);
-
 //                drive.setWeightedDrivePower(
 //                        new Pose2d(
 //                                -gamepad1.left_stick_y * sm,
@@ -141,7 +139,7 @@ public class pididk2 extends OpMode {
                     }
                     func.ceva = true;
                 }
-                else if(!func.automatizare){
+                else if(!func.automatizare && func.getBatteryVoltage() > 9){
                     if (func.ceva) {
                         func.ceva = false;
                         pid.setSetpoint(func.sliderR.getCurrentPosition());

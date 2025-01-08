@@ -30,7 +30,7 @@ public class AutonomAlbastruBara extends LinearOpMode {
         waitForStart();
         Systems.start();
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(6,26,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(6,23,Math.toRadians(90)))
                 .addTemporalMarker(0.5, 0, () -> new Thread(() -> {
                     func.putSpecimenOnBar_auto();
                 }).start())
@@ -54,6 +54,8 @@ public class AutonomAlbastruBara extends LinearOpMode {
                 .build();
         drive.followTrajectorySequence(ts2);
         func.inchidere();
+        func.kdf_auto(100);
+        func.pozArticulatorGrabber = 1;
         TrajectorySequence ts3 = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(0,26,Math.toRadians(90)))
                 .addTemporalMarker(0.5, 0, () -> new Thread(() -> {
@@ -69,6 +71,8 @@ public class AutonomAlbastruBara extends LinearOpMode {
                 .build();
         drive.followTrajectorySequence(ts4);
         func.inchidere();
+        func.kdf_auto(100);
+        func.pozArticulatorGrabber = 1;
         TrajectorySequence ts5 = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(-4,26,Math.toRadians(90)))
                 .addTemporalMarker(0.5, 0, () -> new Thread(() -> {
@@ -78,11 +82,10 @@ public class AutonomAlbastruBara extends LinearOpMode {
         drive.followTrajectorySequence(ts5);
         func.kdf_auto(500);
         func.targetSlider_auto(0,1,5000,10);
-        TrajectorySequence ts6 = drive.trajectorySequenceBuilder(startPose)
+        /*TrajectorySequence ts6 = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(-60,60,Math.toRadians(90)))
                 .build();
-        drive.followTrajectorySequence(ts6);
-        func.pozArticulatorGrabber = 0.6;
+        drive.followTrajectorySequence(ts6);*/
     }
     private final Thread Systems = new Thread(new Runnable() {
         @Override

@@ -334,6 +334,9 @@ public class FunctiiDeProgram{
         }
         motor.setVelocity(0);
     }
+    public double getBatteryVoltage(){
+        return hardwareMap.voltageSensor.iterator().next().getVoltage();
+    }
     public void deschidere(){
         //gheruta.setPosition(0.45);
         gherutaPoz = 0.45;
@@ -382,7 +385,7 @@ public class FunctiiDeProgram{
     }
     public void chill_auto(){
         Thread t2 = new Thread(() -> {
-            pule_lule_auto(580,2000,10);
+            target_auto(580,5000,incheieturaBrat,5000,10);
             articulatorGrabber.setPosition(0.45);
         });
         t2.start();
@@ -410,7 +413,7 @@ public class FunctiiDeProgram{
         if(opMode.opModeIsActive()) {
             gherutaPoz = 0.15;
             pozArticulatorGrabber = 0.75;
-            target_auto(800, 2000, incheieturaBrat,5000,10);
+            target_auto(750, 2000, incheieturaBrat,5000,10);
             targetSlider_auto(750,1,5000,10);
             deschidere();
         }
@@ -437,18 +440,17 @@ public class FunctiiDeProgram{
         target_auto(1100,5000,incheieturaBrat,5000,10);
         targetSlider_auto(1500,1,5000,10);
         articulatorGrabber.setPosition(1);
-        kdf_auto(500);
+        kdf_auto(400);
         deschidere();
-        kdf_auto(500);
+        kdf_auto(200);
         articulatorGrabber.setPosition(0.5);
-        kdf_auto(500);
         extins = false;
         sliderTargetPoz = 0;
         target_auto(0,5000,incheieturaBrat,5000,10);
     }
     public void ia_de_jos(){
-        articulatorGrabber.setPosition(0.3);
-        pozArticulatorGrabber = 0.3;
+        articulatorGrabber.setPosition(0.2);
+        pozArticulatorGrabber = 0.2;
         Thread t1 = new Thread(() -> {
             target(-1400, 5000, incheieturaBrat, 5000, 10);
         });
@@ -461,13 +463,12 @@ public class FunctiiDeProgram{
         }
     }
     public void ia_de_jos_auto(){
+        articulatorGrabber.setPosition(0.2);
         extins = true;
-        articulatorGrabber.setPosition(0.3);
-        kdf_auto(500);
         target_auto(-1400,5000,incheieturaBrat,5000,10);
-        kdf_auto(500);
+        kdf_auto(200);
         inchidere();
-        kdf_auto(500);
+        kdf_auto(200);
         target_auto(0,5000,incheieturaBrat,5000,10);
     }
     public void kdf(long t) {
