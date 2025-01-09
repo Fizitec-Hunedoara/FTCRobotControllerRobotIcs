@@ -317,17 +317,17 @@ public class FunctiiDeProgram{
     public synchronized void target_auto(double poz, double vel, DcMotorEx motor, double t, int tolerance) {
         double lastTime = System.currentTimeMillis();
         if (motor.getCurrentPosition() < poz) {
-            if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
+            /*if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
                 poz = poz * 0.9;
-            }
+            }*/
             while(opMode.opModeIsActive() && motor.getCurrentPosition() < poz - tolerance && lastTime + t > System.currentTimeMillis()) {
                 motor.setVelocity(vel);
             }
         }
         else {
-            if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
+            /*if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
                 poz = poz * 1.1;
-            }
+            }*/
             while(opMode.opModeIsActive() && motor.getCurrentPosition() > poz + tolerance && lastTime + t > System.currentTimeMillis()) {
                 motor.setVelocity(-vel);
             }
@@ -364,13 +364,14 @@ public class FunctiiDeProgram{
         deschidere();
     }
     public void getSpecimen_auto(){
+        rotatieGrabber.setPosition(0.525);
         targetSlider_auto(0,1,5000,10);
-        target_auto(-1270,3000,incheieturaBrat,5000,10);
+        target_auto(-1250,3000,incheieturaBrat,5000,10);
         pozArticulatorGrabber = 0.6;
         deschidere();
     }
     public void chill(){
-        pozArticulatorGrabber = 0.45;
+        pozArticulatorGrabber =0.45;
         articulatorGrabber.setPosition(0.45);
         Thread t1 = new Thread(() -> {
             target(580,2000,incheieturaBrat,5000,10);
@@ -395,7 +396,7 @@ public class FunctiiDeProgram{
     public void putSpecimenOnBar(){
 
         //target(1350,5000,incheieturaBrat,5000,10);
-        pozArticulatorGrabber = 0.75;
+        pozArticulatorGrabber =0.75;
         articulatorGrabber.setPosition(0.75);
         Thread t3 = new Thread(() -> {
             target(900,2000,incheieturaBrat,5000,10);
@@ -412,8 +413,8 @@ public class FunctiiDeProgram{
         //target(1350,5000,incheieturaBrat,5000,10);
         if(opMode.opModeIsActive()) {
             gherutaPoz = 0.15;
-            pozArticulatorGrabber = 0.75;
-            target_auto(750, 2000, incheieturaBrat,5000,10);
+            pozArticulatorGrabber = 0.85;
+            target_auto(850, 2000, incheieturaBrat,5000,10);
             targetSlider_auto(750,1,5000,10);
             deschidere();
         }
@@ -425,8 +426,7 @@ public class FunctiiDeProgram{
         articulatorGrabber.setPosition(poz);
     }
     public void pus_in_cos(){
-        pozArticulatorGrabber = 1;
-        setArticulatorPoz(1);
+        pozArticulatorGrabber =1;
         Thread t1 = new Thread(() -> {
             target(1200,5000,incheieturaBrat,5000,10);
         });
@@ -439,18 +439,18 @@ public class FunctiiDeProgram{
     public void pus_in_cos_auto(){
         target_auto(1100,5000,incheieturaBrat,5000,10);
         targetSlider_auto(1500,1,5000,10);
-        articulatorGrabber.setPosition(1);
-        kdf_auto(400);
+        pozArticulatorGrabber =1;
+        kdf_auto(500);
         deschidere();
-        kdf_auto(200);
-        articulatorGrabber.setPosition(0.5);
+        kdf_auto(500);
+        pozArticulatorGrabber = 0.5;
         extins = false;
         sliderTargetPoz = 0;
         target_auto(0,5000,incheieturaBrat,5000,10);
     }
     public void ia_de_jos(){
         articulatorGrabber.setPosition(0.2);
-        pozArticulatorGrabber = 0.2;
+        pozArticulatorGrabber =0.2;
         Thread t1 = new Thread(() -> {
             target(-1400, 5000, incheieturaBrat, 5000, 10);
         });
@@ -463,9 +463,9 @@ public class FunctiiDeProgram{
         }
     }
     public void ia_de_jos_auto(){
-        articulatorGrabber.setPosition(0.2);
+        pozArticulatorGrabber = 0.25;
         extins = true;
-        target_auto(-1400,5000,incheieturaBrat,5000,10);
+        target_auto(-1600,5000,incheieturaBrat,5000,10);
         kdf_auto(200);
         inchidere();
         kdf_auto(200);
@@ -475,11 +475,10 @@ public class FunctiiDeProgram{
         long lastTime = System.currentTimeMillis();
         while (lastTime + t > System.currentTimeMillis() && !isStopRequested);
     }
-    public void kdf_auto(long t) {
+    public void kdf_auto( long t) {
         long lastTime = System.currentTimeMillis();
         while (lastTime + t > System.currentTimeMillis() && opMode.opModeIsActive());
     }
-
     public void doExtensor() {
         switch (extensorState){
             case RETRACTED:

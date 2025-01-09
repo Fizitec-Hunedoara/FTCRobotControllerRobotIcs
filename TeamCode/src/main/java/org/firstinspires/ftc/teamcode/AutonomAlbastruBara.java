@@ -38,27 +38,26 @@ public class AutonomAlbastruBara extends LinearOpMode {
         drive.followTrajectorySequence(ts);
         func.kdf_auto(500);
         func.targetSlider_auto(0,1,5000,10);
-        func.deschidere();
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .splineTo(new Vector2d(-35,28),Math.toRadians(270))
                 .splineToConstantHeading(new Vector2d(-47,12),Math.toRadians(180))
                 .lineToLinearHeading(new Pose2d(-47,50, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(-47,18, Math.toRadians(270)))
-                .splineTo(new Vector2d(-53, 18),Math.toRadians(90))
-                .lineToLinearHeading(new Pose2d(-56,50, Math.toRadians(90)))
+                /*.lineToLinearHeading(new Pose2d(47,-18, Math.toRadians(90)))
+                .splineTo(new Vector2d(53, -18),Math.toRadians(270))
+                .lineToLinearHeading(new Pose2d(56,-50, Math.toRadians(270)))*/
                 .addDisplacementMarker(() -> new Thread(() -> {
                     func.getSpecimen_auto();
                 }).start())
-                .lineToLinearHeading(new Pose2d(-53, 30, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(-53, 52, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-47, 30, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-47, 52, Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts2);
         func.inchidere();
         func.kdf_auto(100);
         func.pozArticulatorGrabber = 1;
         TrajectorySequence ts3 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(0,26,Math.toRadians(90)))
-                .addTemporalMarker(0.5, 0, () -> new Thread(() -> {
+                .lineToLinearHeading(new Pose2d(3,23,Math.toRadians(90)))
+                .addTemporalMarker(0.4, 0, () -> new Thread(() -> {
                     func.putSpecimenOnBar_auto();
                 }).start())
                 .build();
@@ -74,18 +73,18 @@ public class AutonomAlbastruBara extends LinearOpMode {
         func.kdf_auto(100);
         func.pozArticulatorGrabber = 1;
         TrajectorySequence ts5 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-4,26,Math.toRadians(90)))
-                .addTemporalMarker(0.5, 0, () -> new Thread(() -> {
+                .lineToLinearHeading(new Pose2d(3,23,Math.toRadians(90)))
+                .addTemporalMarker(0.4, 0, () -> new Thread(() -> {
                     func.putSpecimenOnBar_auto();
                 }).start())
                 .build();
         drive.followTrajectorySequence(ts5);
         func.kdf_auto(500);
         func.targetSlider_auto(0,1,5000,10);
-        /*TrajectorySequence ts6 = drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence ts6 = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(-60,60,Math.toRadians(90)))
                 .build();
-        drive.followTrajectorySequence(ts6);*/
+        drive.followTrajectorySequence(ts6);
     }
     private final Thread Systems = new Thread(new Runnable() {
         @Override

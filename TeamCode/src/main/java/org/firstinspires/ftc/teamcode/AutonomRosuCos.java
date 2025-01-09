@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 public class AutonomRosuCos extends LinearOpMode {
     public Pid_Controller_Adevarat pid = new Pid_Controller_Adevarat(0, 0, 0);
     FunctiiDeProgram func = new FunctiiDeProgram(this);
-    double pidResult;
+    double pidResult, pozRotatieGheara = 0.525;
     @Override
     public void runOpMode() throws InterruptedException {
         func.init(hardwareMap,telemetry,false);
@@ -22,30 +22,42 @@ public class AutonomRosuCos extends LinearOpMode {
         Pose2d startPose = new Pose2d(-31.1591355599, -61.0236220472, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         waitForStart();
-        func.articulatorGrabber.setPosition(0.5);
         func.extins = true;
         Systems.start();
+        func.pozArticulatorGrabber = 0.5;
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-55,-55,Math.toRadians(45)))
-                .addTemporalMarker(0,0,() -> new Thread(() -> {
-                    func.pus_in_cos_auto();
+                .lineToLinearHeading(new Pose2d(-55.5,-55.5,Math.toRadians(45)))
+                .addTemporalMarker(0.2,0,() -> new Thread(() -> {
+                 func.pus_in_cos_auto();
                 }).start())
                 .build();
         drive.followTrajectorySequence(ts);
-        func.kdf_auto(500);
+        //func.pus_in_cos_auto();
+        func.kdf_auto(1500);
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(-50,-46,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts2);
         func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
-        func.kdf_auto(200);
+        //func.pus_in_cos_auto();
+        func.kdf_auto(1200);
         TrajectorySequence ts3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(-60,-46,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts3);
         func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
+        //func.pus_in_cos_auto();
+        func.kdf_auto(1200);
+        pozRotatieGheara = 0.7;
+        TrajectorySequence ts4 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineToLinearHeading(new Pose2d(-60,-46,Math.toRadians(120)))
+                .build();
+        drive.followTrajectorySequence(ts4);
+        func.ia_de_jos_auto();
+        drive.followTrajectorySequence(ts);
+        func.pus_in_cos_auto();
         func.kdf_auto(5000);
     }
     private final Thread Systems = new Thread(new Runnable() {
@@ -65,7 +77,7 @@ public class AutonomRosuCos extends LinearOpMode {
                     func.sliderL.setPower(-pidResult);
                 }
                 func.gheruta.setPosition(func.gherutaPoz);
-                //func.articulatorGrabber.setPosition(func.pozArticulatorGrabber);
+                func.articulatorGrabber.setPosition(func.pozArticulatorGrabber);
                 if(func.extins){
                     func.extindere1.setPosition(0.2);
                     func.extindere2.setPosition(1);
@@ -74,7 +86,7 @@ public class AutonomRosuCos extends LinearOpMode {
                     func.extindere1.setPosition(0.5);
                     func.extindere2.setPosition(0.5);
                 }
-                func.rotatieGrabber.setPosition(0.525);
+                func.rotatieGrabber.setPosition(pozRotatieGheara);
             }
         }
     });

@@ -56,8 +56,8 @@ public class AutonomRosuBara extends LinearOpMode {
         func.kdf_auto(100);
         func.pozArticulatorGrabber = 1;
         TrajectorySequence ts3 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(0,-26,Math.toRadians(270)))
-                .addTemporalMarker(0.5, 0, () -> new Thread(() -> {
+                .lineToLinearHeading(new Pose2d(-3,-23,Math.toRadians(270)))
+                .addTemporalMarker(0.4, 0, () -> new Thread(() -> {
                     func.putSpecimenOnBar_auto();
                 }).start())
                 .build();
@@ -73,8 +73,8 @@ public class AutonomRosuBara extends LinearOpMode {
         func.kdf_auto(100);
         func.pozArticulatorGrabber = 1;
         TrajectorySequence ts5 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(0,-26,Math.toRadians(270)))
-                .addTemporalMarker(0.5, 0, () -> new Thread(() -> {
+                .lineToLinearHeading(new Pose2d(-3,-23,Math.toRadians(270)))
+                .addTemporalMarker(0.4, 0, () -> new Thread(() -> {
                     func.putSpecimenOnBar_auto();
                 }).start())
                 .build();

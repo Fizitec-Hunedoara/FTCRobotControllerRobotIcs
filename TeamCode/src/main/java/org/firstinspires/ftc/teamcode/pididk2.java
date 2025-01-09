@@ -128,15 +128,9 @@ public class pididk2 extends OpMode {
 
             while (!stop) {
                 pid.setPID(pslider, islider, dslider);
-                if (gamepad2.left_stick_y != 0.0) {
-                    if (gamepad2.left_stick_y > 0.0) {
-                        func.sliderR.setPower(gamepad2.left_stick_y);
-                        func.sliderL.setPower(gamepad2.left_stick_y);
-                    }
-                    else {
-                        func.sliderR.setPower(gamepad2.left_stick_y);
-                        func.sliderL.setPower(gamepad2.left_stick_y);
-                    }
+                if (gamepad2.right_stick_y != 0.0) {
+                    func.sliderR.setPower(gamepad2.right_stick_y);
+                    func.sliderL.setPower(gamepad2.right_stick_y);
                     func.ceva = true;
                 }
                 else if(!func.automatizare && func.getBatteryVoltage() > 9){
@@ -154,7 +148,7 @@ public class pididk2 extends OpMode {
                         func.sliderL.setPower(-pidResult);
                     }
                 }
-                func.incheieturaBrat.setPower(-gamepad2.right_stick_y * 2);
+                func.incheieturaBrat.setPower(-gamepad2.left_stick_y * 2);
                 func.articulatorGrabber.setPosition(func.pozArticulatorGrabber);
                 if(gamepad2.dpad_down){
                     func.pozArticulatorGrabber = 0.6;
