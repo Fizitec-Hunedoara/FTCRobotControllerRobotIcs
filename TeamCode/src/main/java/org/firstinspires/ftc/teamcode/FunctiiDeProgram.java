@@ -320,7 +320,7 @@ public class FunctiiDeProgram{
             /*if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
                 poz = poz * 0.9;
             }*/
-            while(opMode.opModeIsActive() && motor.getCurrentPosition() < poz - tolerance && lastTime + t > System.currentTimeMillis()) {
+            while (opMode.opModeIsActive() && motor.getCurrentPosition() < poz - tolerance && lastTime + t > System.currentTimeMillis()) {
                 motor.setVelocity(vel);
             }
         }
@@ -328,7 +328,7 @@ public class FunctiiDeProgram{
             /*if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
                 poz = poz * 1.1;
             }*/
-            while(opMode.opModeIsActive() && motor.getCurrentPosition() > poz + tolerance && lastTime + t > System.currentTimeMillis()) {
+            while (opMode.opModeIsActive() && motor.getCurrentPosition() > poz + tolerance && lastTime + t > System.currentTimeMillis()) {
                 motor.setVelocity(-vel);
             }
         }
@@ -366,8 +366,8 @@ public class FunctiiDeProgram{
     public void getSpecimen_auto(){
         rotatieGrabber.setPosition(0.525);
         targetSlider_auto(0,1,5000,10);
-        target_auto(-1250,3000,incheieturaBrat,5000,10);
-        pozArticulatorGrabber = 0.6;
+        target_auto(-1280,3000,incheieturaBrat,5000,10);
+        pozArticulatorGrabber = 0.58;
         deschidere();
     }
     public void chill(){
@@ -413,9 +413,9 @@ public class FunctiiDeProgram{
         //target(1350,5000,incheieturaBrat,5000,10);
         if(opMode.opModeIsActive()) {
             gherutaPoz = 0.15;
-            pozArticulatorGrabber = 0.85;
+            pozArticulatorGrabber = 0.75;
             target_auto(850, 2000, incheieturaBrat,5000,10);
-            targetSlider_auto(750,1,5000,10);
+            targetSlider_auto(850,1,5000,10);
             deschidere();
         }
         //ansamblul_leleseana(450,-1,10);
@@ -437,7 +437,7 @@ public class FunctiiDeProgram{
         t2.start();
     }
     public void pus_in_cos_auto(){
-        target_auto(1100,5000,incheieturaBrat,5000,10);
+        target_auto(1200,5000,incheieturaBrat,5000,10);
         targetSlider_auto(1500,1,5000,10);
         pozArticulatorGrabber =1;
         kdf_auto(500);

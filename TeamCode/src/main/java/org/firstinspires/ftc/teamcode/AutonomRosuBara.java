@@ -40,6 +40,7 @@ public class AutonomRosuBara extends LinearOpMode {
         func.targetSlider_auto(0,1,5000,10);
         TrajectorySequence ts2 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .splineTo(new Vector2d(35,-28),Math.toRadians(90))
+                .lineToLinearHeading(new Pose2d(35,-18, Math.toRadians(90)))
                 .splineToConstantHeading(new Vector2d(47,-12),Math.toRadians(0))
                 .lineToLinearHeading(new Pose2d(47,-50, Math.toRadians(90)))
                 /*.lineToLinearHeading(new Pose2d(47,-18, Math.toRadians(90)))

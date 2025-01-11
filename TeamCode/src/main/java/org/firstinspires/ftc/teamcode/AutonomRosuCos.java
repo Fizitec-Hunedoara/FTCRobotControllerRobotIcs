@@ -26,7 +26,7 @@ public class AutonomRosuCos extends LinearOpMode {
         Systems.start();
         func.pozArticulatorGrabber = 0.5;
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-55.5,-55.5,Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(-57.5,-53.5,Math.toRadians(45)))
                 .addTemporalMarker(0.2,0,() -> new Thread(() -> {
                  func.pus_in_cos_auto();
                 }).start())
@@ -43,20 +43,21 @@ public class AutonomRosuCos extends LinearOpMode {
         //func.pus_in_cos_auto();
         func.kdf_auto(1200);
         TrajectorySequence ts3 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-60,-46,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-60,-47,Math.toRadians(90)))
                 .build();
         drive.followTrajectorySequence(ts3);
         func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
         //func.pus_in_cos_auto();
         func.kdf_auto(1200);
-        pozRotatieGheara = 0.7;
+        pozRotatieGheara = 0.35;
         TrajectorySequence ts4 = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .lineToLinearHeading(new Pose2d(-60,-46,Math.toRadians(120)))
                 .build();
         drive.followTrajectorySequence(ts4);
         func.ia_de_jos_auto();
         drive.followTrajectorySequence(ts);
+        pozRotatieGheara = 0.525;
         func.pus_in_cos_auto();
         func.kdf_auto(5000);
     }
