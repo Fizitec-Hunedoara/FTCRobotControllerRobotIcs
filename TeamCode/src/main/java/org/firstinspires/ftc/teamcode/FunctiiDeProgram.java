@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -24,17 +26,14 @@ public class FunctiiDeProgram {
     public DcMotorEx motorBL, motorBR, motorFL, motorFR, sliderL, sliderR, intake;
     public Servo articulatieGheruta, gheruta, extindereR, extindereL, intakeR, intakeL, armL, armR;
     public boolean automatizare = false, ceva = false, extins = false, initExtins = false;
-    private AprilTagProcessor aprilTag;
-    private VisionPortal visionPortal;
-    private CRServo maceta;
-    private AnalogInput potentiometru;
-    private DistanceSensor distanceL, distanceR;
-    private ColorSensor colorSensor;
+    public ColorSensor colorSensor;
+    //TouchSensor touchL,touchR;
     private boolean sasiuInited;
     private boolean isStopRequested = false;
     public double gherutaPoz = 0.15, sliderTargetPoz = 0, pozArticulatorGrabber = 0.1;
     LinearOpMode opMode;
     public ExtensorState extensorState = ExtensorState.RETRACTED;
+    public double pozGheruta = 0.154, pozArticulator = 0.21, pozArm = 0.01,pozExtindere = 0;
 
     public FunctiiDeProgram() {
     }
@@ -58,6 +57,7 @@ public class FunctiiDeProgram {
         sliderL = hardwareMap.get(DcMotorEx.class, "sliderL");
         sliderR = hardwareMap.get(DcMotorEx.class, "sliderR");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
+
         articulatieGheruta = hardwareMap.get(Servo.class, "artG");
         extindereR = hardwareMap.get(Servo.class, "extindereR");
         extindereL = hardwareMap.get(Servo.class, "extindereL");
@@ -66,6 +66,10 @@ public class FunctiiDeProgram {
         armR = hardwareMap.get(Servo.class, "armR");
         armL = hardwareMap.get(Servo.class, "armL");
         gheruta = hardwareMap.get(Servo.class, "claw");
+
+        colorSensor = hardwareMap.get(ColorSensor.class,"colorSensor");
+        /*touchL = hardwareMap.get(TouchSensor.class,"touchL");
+        touchR = hardwareMap.get(TouchSensor.class,"touchR");*/
 
         sliderR.setDirection(DcMotorEx.Direction.REVERSE);
 
@@ -291,13 +295,54 @@ public class FunctiiDeProgram {
     }
 
     public void deschidere() {
-        gherutaPoz = 0.45;
+        pozGheruta = 0.154;
     }
-
     public void inchidere() {
-        gherutaPoz = 0.15;
+        pozGheruta = 0.0;
     }
-
+    public void intaketogheara(){
+        Thread t1 = new Thread(() -> {
+            inchidere();
+            kdf(500);
+            pozArm = 0.2;
+        });
+        t1.start();
+    }
+    public void ghearatocos(){
+        pozArm = 0.51;
+        pozArticulator = 0.3;
+    }
+    public void gardtogheara(){
+        Thread t1 = new Thread(() -> {
+            pozArticulator = 0;
+            kdf(200);
+            pozArm = 0.2;
+            kdf(200);
+            pozArticulator = 0.5;
+            pozArm = 0.01;
+            kdf(200);
+            inchidere();
+        });
+        t1.start();
+    }
+    public void ghearapozbara(){
+        Thread t1 = new Thread(() -> {
+            pozArticulator = 0.8;
+            pozArm = 0.55;
+            kdf(200);
+            pozArticulator = 0.5;
+        });
+        t1.start();
+    }
+    public void puspebara(){
+        Thread t1 = new Thread(() -> {
+            pozArticulator = 0.1;
+            pozArm = 0.11;
+            kdf(200);
+            deschidere();
+        });
+        t1.start();
+    }
     public void kdf(long t) {
         long lastTime = System.currentTimeMillis();
         while (lastTime + t > System.currentTimeMillis() && !isStopRequested) ;
@@ -324,4 +369,7 @@ public class FunctiiDeProgram {
                 break;
         }
     }
+   /* public boolean atins(){
+        return touchL.isPressed() || touchR.isPressed();
+    }*/
 }
