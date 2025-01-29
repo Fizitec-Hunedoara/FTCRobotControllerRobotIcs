@@ -24,7 +24,7 @@ public class FunctiiDeProgram {
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
     public DcMotorEx motorBL, motorBR, motorFL, motorFR, sliderL, sliderR, intake;
-    public Servo articulatieGheruta, gheruta, extindereR, extindereL, intakeR, intakeL, armL, armR;
+    public Servo articulatieGheruta, gheruta, extindereR, extindereL, intakeRotatie, intakePliere, armL, armR;
     public boolean automatizare = false, ceva = false, extins = false, initExtins = false;
     public ColorSensor colorSensor;
     //TouchSensor touchL,touchR;
@@ -33,7 +33,7 @@ public class FunctiiDeProgram {
     public double gherutaPoz = 0.15, sliderTargetPoz = 0, pozArticulatorGrabber = 0.1;
     LinearOpMode opMode;
     public ExtensorState extensorState = ExtensorState.RETRACTED;
-    public double pozGheruta = 0.154, pozArticulator = 0.21, pozArm = 0.01,pozExtindere = 0;
+    public double pozGheruta = 0.154, pozArticulator = 0.21, pozArm = 0.1,pozExtindere = 0.0;
 
     public FunctiiDeProgram() {
     }
@@ -61,8 +61,8 @@ public class FunctiiDeProgram {
         articulatieGheruta = hardwareMap.get(Servo.class, "artG");
         extindereR = hardwareMap.get(Servo.class, "extindereR");
         extindereL = hardwareMap.get(Servo.class, "extindereL");
-        intakeR = hardwareMap.get(Servo.class, "intakeR");
-        intakeL = hardwareMap.get(Servo.class, "intakeL");
+        intakePliere = hardwareMap.get(Servo.class, "intakeR");
+        intakeRotatie = hardwareMap.get(Servo.class, "intakeL");
         armR = hardwareMap.get(Servo.class, "armR");
         armL = hardwareMap.get(Servo.class, "armL");
         gheruta = hardwareMap.get(Servo.class, "claw");
@@ -95,23 +95,28 @@ public class FunctiiDeProgram {
         motorFL = hard.get(DcMotorEx.class, "FL"); // Motor Back-Left
         motorFR = hard.get(DcMotorEx.class, "FR"); // Motor Back-Left
 
-        motorBL.setDirection(DcMotorEx.Direction.REVERSE);
-        motorFL.setDirection(DcMotorEx.Direction.REVERSE);
+        motorBR.setDirection(DcMotorEx.Direction.REVERSE);
+        motorFR.setDirection(DcMotorEx.Direction.REVERSE);
 
         motorBL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        motorFR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        /*motorFR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motorFL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);*/
 
-        motorFR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        /*motorFR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         motorFL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);*/
+
+        motorFR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motorFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public synchronized void POWER(double df1, double sf1, double ds1, double ss1) {
@@ -120,6 +125,7 @@ public class FunctiiDeProgram {
             motorBL.setPower(ss1);
             motorFL.setPower(sf1);
             motorBR.setPower(ds1);
+
         }
         else {
             throw new NullPointerException("Bro sasiul nu e initializat");
@@ -353,19 +359,19 @@ public class FunctiiDeProgram {
         while (lastTime + t > System.currentTimeMillis() && opMode.opModeIsActive()) ;
     }
 
-    public void doExtensor() {
+    public void setExtinderePoz() {
         switch (extensorState) {
             case RETRACTED:
-                extindereL.setPosition(0.52);
-                extindereR.setPosition(0.49);
+                extindereL.setPosition(0.07);
+                extindereR.setPosition(0.93);
                 break;
             case HALF_EXTENDED:
-                extindereL.setPosition(0.2);
-                extindereR.setPosition(0.49);
+                extindereL.setPosition(0.17);
+                extindereR.setPosition(0.83);
                 break;
             case FULL_EXTENDED:
-                extindereL.setPosition(0.2);
-                extindereR.setPosition(1);
+                extindereL.setPosition(0.275);
+                extindereR.setPosition(0.725);
                 break;
         }
     }

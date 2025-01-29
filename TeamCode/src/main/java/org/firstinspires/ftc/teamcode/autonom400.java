@@ -8,7 +8,8 @@ public class autonom400 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.addData("mda", "am facut 400 de puncte");
+
+        telemetry.addData("mda", "am facut" +  "de puncte");
         telemetry.update();
         waitForStart();
 }}
