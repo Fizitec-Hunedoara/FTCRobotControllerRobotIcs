@@ -24,16 +24,16 @@ public class FunctiiDeProgram {
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
     public DcMotorEx motorBL, motorBR, motorFL, motorFR, sliderL, sliderR, intake;
-    public Servo articulatieGheruta, gheruta, extindereR, extindereL, intakeRotatie, intakePliere, armL, armR;
+    public Servo articulatieGheruta, gheruta, extindereR, extindereL, intakeR, intakeL, armL, armR, putaluiLuca;
     public boolean automatizare = false, ceva = false, extins = false, initExtins = false;
     public ColorSensor colorSensor;
-    //TouchSensor touchL,touchR;
+    TouchSensor touchL,touchR;
     private boolean sasiuInited;
     private boolean isStopRequested = false;
-    public double gherutaPoz = 0.15, sliderTargetPoz = 0, pozArticulatorGrabber = 0.1;
+    public double sliderTargetPoz = 0;
     LinearOpMode opMode;
     public ExtensorState extensorState = ExtensorState.RETRACTED;
-    public double pozGheruta = 0.154, pozArticulator = 0.21, pozArm = 0.1,pozExtindere = 0.0;
+    public double pozGheruta = 0, pozArticulator = 0.18, pozArm = 0.1,pozExtindere = 0.0, pozRotatie = 0.0, pozPliere = 0.0, pozPuta = 0.85;
 
     public FunctiiDeProgram() {
     }
@@ -61,15 +61,16 @@ public class FunctiiDeProgram {
         articulatieGheruta = hardwareMap.get(Servo.class, "artG");
         extindereR = hardwareMap.get(Servo.class, "extindereR");
         extindereL = hardwareMap.get(Servo.class, "extindereL");
-        intakePliere = hardwareMap.get(Servo.class, "intakeR");
-        intakeRotatie = hardwareMap.get(Servo.class, "intakeL");
+        intakeL = hardwareMap.get(Servo.class, "intakeL");
+        intakeR = hardwareMap.get(Servo.class, "intakeR");
         armR = hardwareMap.get(Servo.class, "armR");
         armL = hardwareMap.get(Servo.class, "armL");
         gheruta = hardwareMap.get(Servo.class, "claw");
+        putaluiLuca = hardwareMap.get(Servo.class, "putaluiLuca");
 
-        colorSensor = hardwareMap.get(ColorSensor.class,"colorSensor");
-        /*touchL = hardwareMap.get(TouchSensor.class,"touchL");
-        touchR = hardwareMap.get(TouchSensor.class,"touchR");*/
+        //colorSensor = hardwareMap.get(ColorSensor.class,"colorSensor");
+        touchL = hardwareMap.get(TouchSensor.class,"touchL");
+        touchR = hardwareMap.get(TouchSensor.class,"touchR");
 
         sliderR.setDirection(DcMotorEx.Direction.REVERSE);
 
@@ -95,8 +96,8 @@ public class FunctiiDeProgram {
         motorFL = hard.get(DcMotorEx.class, "FL"); // Motor Back-Left
         motorFR = hard.get(DcMotorEx.class, "FR"); // Motor Back-Left
 
-        motorBR.setDirection(DcMotorEx.Direction.REVERSE);
-        motorFR.setDirection(DcMotorEx.Direction.REVERSE);
+        motorBL.setDirection(DcMotorEx.Direction.REVERSE);
+        motorFL.setDirection(DcMotorEx.Direction.REVERSE);
 
         motorBL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -301,54 +302,93 @@ public class FunctiiDeProgram {
     }
 
     public void deschidere() {
-        pozGheruta = 0.154;
+        pozGheruta = 0.3;
     }
     public void inchidere() {
-        pozGheruta = 0.0;
+        pozGheruta = 0;
     }
+
     public void intaketogheara(){
         Thread t1 = new Thread(() -> {
+            pozArm = 0.04;
+            pozArticulator = 0.22;
+            kdf(200);
             inchidere();
-            kdf(500);
-            pozArm = 0.2;
         });
         t1.start();
     }
     public void ghearatocos(){
-        pozArm = 0.51;
-        pozArticulator = 0.3;
+        pozArm = 0.04;
+        kdf(300);
+        pozArm = 0.52;
+        pozArticulator = 0.4;
+        //kdf(300);
+        //pozArm = 0.52;
+        //pozArticulator = 0.575;
     }
     public void gardtogheara(){
         Thread t1 = new Thread(() -> {
-            pozArticulator = 0;
+            pozArticulator = 0.465;
             kdf(200);
-            pozArm = 0.2;
+            pozArm = 0.07;
             kdf(200);
-            pozArticulator = 0.5;
-            pozArm = 0.01;
+        });
+        t1.start();
+    }
+    public void gardtogheara_auto(){
+        pozArticulator = 0.465;
+        kdf_auto(200);
+        pozArm = 0.07;
+        kdf_auto(200);
+    }
+    public void ghearapozbara(){
+        Thread t1 = new Thread(() -> {
+            inchidere();
+            kdf(200);
+            pozArticulator = 0.7054;
+            pozArm = 0.49;
+            kdf(500);
+            pozGheruta = 0.13;
             kdf(200);
             inchidere();
         });
         t1.start();
     }
-    public void ghearapozbara(){
-        Thread t1 = new Thread(() -> {
-            pozArticulator = 0.8;
-            pozArm = 0.55;
-            kdf(200);
-            pozArticulator = 0.5;
-        });
-        t1.start();
+    public void ghearapozbara_auto(boolean release){
+        inchidere();
+        kdf_auto(200);
+        pozArticulator = 0.7054;
+        pozArm = 0.49;
+        kdf_auto(500);
+        if(release) {
+            pozGheruta = 0.13;
+            kdf_auto(200);
+        }
+        inchidere();
     }
+
     public void puspebara(){
         Thread t1 = new Thread(() -> {
-            pozArticulator = 0.1;
-            pozArm = 0.11;
+            pozArticulator = 0.6;
+            pozArm = 0.5;
             kdf(200);
+            pozArticulator = 0.3;
+            pozArm = 0.3;
+            kdf(500);
             deschidere();
         });
         t1.start();
     }
+    public void puspebara_auto(){
+        pozArticulator = 0.6;
+        pozArm = 0.5;
+        kdf_auto(200);
+        pozArticulator = 0.3;
+        pozArm = 0.3;
+        kdf_auto(500);
+        deschidere();
+    }
+
     public void kdf(long t) {
         long lastTime = System.currentTimeMillis();
         while (lastTime + t > System.currentTimeMillis() && !isStopRequested) ;
@@ -362,20 +402,32 @@ public class FunctiiDeProgram {
     public void setExtinderePoz() {
         switch (extensorState) {
             case RETRACTED:
-                extindereL.setPosition(0.07);
-                extindereR.setPosition(0.93);
+                extindereL.setPosition(0.01);
+                extindereR.setPosition(0.99);
+                intakeR.setPosition(0.625);
+                intakeL.setPosition(0.79);
+                break;
+            case OUT:
+                extindereL.setPosition(0.01);
+                extindereR.setPosition(0.99);
+                intakeR.setPosition(0.11);
+                intakeL.setPosition(0.09);
                 break;
             case HALF_EXTENDED:
                 extindereL.setPosition(0.17);
-                extindereR.setPosition(0.83);
+                extindereR.setPosition(0.75);
+                intakeR.setPosition(0.11);
+                intakeL.setPosition(0.09);
                 break;
             case FULL_EXTENDED:
                 extindereL.setPosition(0.275);
-                extindereR.setPosition(0.725);
+                extindereR.setPosition(0.73);
+                intakeR.setPosition(0.11);
+                intakeL.setPosition(0.09);
                 break;
         }
     }
-   /* public boolean atins(){
+   public boolean atins(){
         return touchL.isPressed() || touchR.isPressed();
-    }*/
+    }
 }
