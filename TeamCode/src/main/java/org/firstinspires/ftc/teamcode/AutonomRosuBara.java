@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 @Autonomous
-public class AutonomBara extends LinearOpMode {
+public class AutonomRosuBara extends LinearOpMode {
     FunctiiDeProgram func = new FunctiiDeProgram(this);
     Pid_Controller_Adevarat pid = new Pid_Controller_Adevarat(0,0,0);
     double pidResult = 0.0;
@@ -28,7 +28,7 @@ public class AutonomBara extends LinearOpMode {
         TrajectorySequence ts = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(-6,-24,Math.toRadians(270)))
                 .addTemporalMarker(0, 0, () -> new Thread(() -> {
-                    func.ghearapozbara_auto(false);
+                    func.ghearapozbara_auto(true);
                     func.kdf_auto(700);
                     func.puspebara_auto();
                 }).start())
@@ -88,7 +88,7 @@ public class AutonomBara extends LinearOpMode {
         func.inchidere();
         func.kdf_auto(100);
         TrajectorySequence ts5 = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-10,-24,Math.toRadians(270)),SampleMecanumDrive.getVelocityConstraint(80.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToLinearHeading(new Pose2d(-7,-24,Math.toRadians(270)),SampleMecanumDrive.getVelocityConstraint(80.0, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(80.0)
                 )
                 .addTemporalMarker(0, 0, () -> new Thread(() -> {
@@ -144,8 +144,6 @@ public class AutonomBara extends LinearOpMode {
                 func.armR.setPosition(func.pozArm);
                 func.extindereL.setPosition(0.01);
                 func.extindereR.setPosition(0.99);
-                func.intakeR.setPosition(0.625);
-                func.intakeL.setPosition(0.79);
             }
         }
     });

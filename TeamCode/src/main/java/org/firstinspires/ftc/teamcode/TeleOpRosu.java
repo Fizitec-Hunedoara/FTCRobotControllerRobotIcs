@@ -4,7 +4,6 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gam
 import static java.lang.Math.abs;
 
 import static org.firstinspires.ftc.teamcode.Parametri.*;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -27,11 +26,13 @@ public class TeleOpRosu extends OpMode {
     public FunctiiDeProgram func = new FunctiiDeProgram();
     boolean stop = false, puneBara = false;
     boolean apasat = false;
+    boolean initial = false;
+    boolean initial1 = false;
     private boolean rtBool, ltBool, rtBoolLast = false, ltBoolLast = false;
     private long extensorExtensionTriggerTime, extensorRetractionTriggerTime;
     private boolean extensorExtensionOverride = false, extensorRetractionOverride = false;
     public double pidResult;
-    public double powIntake = 0.0;
+    //public double powIntake = 0.0;
     long lastTime = 0;
     private Encoder right,left,front;
     @Override
@@ -115,18 +116,10 @@ public class TeleOpRosu extends OpMode {
                     else{
                         func.sliderR.setPower(0);
                         func.sliderL.setPower(0);
+
                     }
                 }
-                if(gamepad2.a){
-                    powIntake = 0.7;
-                }
-                else if(gamepad2.b){
-                    powIntake = 0;
-                }
-                if(gamepad2.x){
-                    powIntake = -0.7;
-                }
-                func.intake.setPower(powIntake);
+
                 if(gamepad2.right_bumper){
                     func.pozGheruta = 0;
                 }
@@ -134,34 +127,6 @@ public class TeleOpRosu extends OpMode {
                     func.pozGheruta = 0.3;
                 }
                 func.gheruta.setPosition(func.pozGheruta);
-
-                /*if(gamepad1.dpad_left && func.pozArticulator < 1){
-                    func.pozArticulator += 0.005;
-                }
-                if(gamepad1.dpad_right && func.pozArticulator > 0){
-                    func.pozArticulator -= 0.005;
-                }
-                 if(gamepad1.dpad_up && func.pozArm < 1){
-                    func.pozArm += 0.005;
-                }
-                if(gamepad1.dpad_down && func.pozArm > 0){
-                    func.pozArm -= 0.005;
-                }*/
-
-                if(gamepad1.dpad_left && func.pozRotatie < 1){
-                    func.pozRotatie += 0.005;
-                }
-                if(gamepad1.dpad_right && func.pozRotatie > 0){
-                    func.pozRotatie -= 0.005;
-                }
-                if(gamepad1.dpad_up && func.pozPliere < 1){
-                    func.pozPliere += 0.005;
-                }
-                if(gamepad1.dpad_down && func.pozPliere > 0){
-                    func.pozPliere -= 0.005;
-                }
-                //func.intakeL.setPosition(func.pozPliere);
-                //func.intakeR.setPosition(func.pozRotatie);
 
                 func.armL.setPosition(func.pozArm);
                 func.armR.setPosition(func.pozArm);
@@ -178,9 +143,25 @@ public class TeleOpRosu extends OpMode {
                 }
                 if(gamepad2.dpad_down){
                     func.deschidere();
-                    func.pozArm = 0.08;
-                    func.pozArticulator = 0.18;
+                    func.pozArm = 0.2              ;
+                    func.pozArticulator = 0.1;
                 }
+                 if(gamepad1.a && !initial && lastTime + 500 < System.currentTimeMillis()){
+                     func.samples();
+                     initial = true;
+                     lastTime = System.currentTimeMillis();
+                }
+                if(gamepad1.b && !initial1 && lastTime + 500 < System.currentTimeMillis()){
+                    func.luat();
+                    initial1 = true;
+                    lastTime = System.currentTimeMillis();
+                }
+                else if (gamepad1.b && initial1 && lastTime + 300 < System.currentTimeMillis()) {
+                    func.initiala();
+                    initial1 = false;
+                    lastTime = System.currentTimeMillis();
+                }
+
                 if(gamepad2.dpad_left){
                     if(!puneBara && lastTime + 500 < System.currentTimeMillis()) {
                         func.gardtogheara();
@@ -210,13 +191,9 @@ public class TeleOpRosu extends OpMode {
                     ltBool = false;
                 }
 
-
                 if(rtBool != rtBoolLast){
                     if(rtBool){
                         if(func.extensorState == ExtensorState.RETRACTED){
-                            func.extensorState = ExtensorState.OUT;
-                        }
-                        else if(func.extensorState == ExtensorState.OUT){
                             func.extensorState = ExtensorState.HALF_EXTENDED;
                         }
                         else if(func.extensorState == ExtensorState.HALF_EXTENDED){
@@ -231,30 +208,47 @@ public class TeleOpRosu extends OpMode {
                             func.extensorState = ExtensorState.HALF_EXTENDED;
                         }
                         else if(func.extensorState == ExtensorState.HALF_EXTENDED){
-                            func.extensorState = ExtensorState.OUT;
-                        }
-                        else if(func.extensorState == ExtensorState.OUT){
                             func.extensorState = ExtensorState.RETRACTED;
                         }
                     }
                     ltBoolLast = ltBool;
                 }
+                if(gamepad1.dpad_up){
+                    func.deschis();
+                }
+                if(gamepad1.dpad_down){
+                    func.inchis();
+                }
                 func.setExtinderePoz();
+                /*if(gamepad1.a && func.pozArtClaw < 1){
+                    func.pozArtClaw += 0.005;
+                }
+                if(gamepad1.b && func.pozArtClaw > 0){
+                    func.pozArtClaw -= 0.005;
+                }
+                if(gamepad1.dpad_up && func.pozRotatie < 1){
+                    func.pozRotatie += 0.005;
+                }
+                if(gamepad1.dpad_down && func.pozRotatie > 0){
+                    func.pozRotatie -= 0.005;
+                }
+
+                if(gamepad1.dpad_left && func.pozRotClaw < 1){
+                    func.pozRotClaw += 0.005;
+                }
+                if(gamepad1.dpad_right && func.pozRotClaw > 0){
+                    func.pozRotClaw -= 0.005;
+                }*/
+
                 func.articulatieGheruta.setPosition(func.pozArticulator);
-                func.putaluiLuca.setPosition(func.pozPuta);
+
+                func.articulatieClaw2.setPosition(func.pozArtClaw);
+                func.rotatieClaw2.setPosition(func.pozRotClaw);
+                func.rotatiefata.setPosition(func.pozRotatie);
+                func.claw2.setPosition(func.pozGheruta2);
+
             }
 
-            //extindere retras: 0.07
-            //extindere intermediar: 0.17
-            //extindere extins: 0.275
-
-            //poz intake retras:
-            //rot: 0.68
-            //pliere: 0.55
-
-            //poz intake luare 1:
-            //rot: 0
-            //pliere: 0.05
         }
     });
     public void stop() {
@@ -267,19 +261,18 @@ public class TeleOpRosu extends OpMode {
         telemetry.addData("setPoint:",pid.getSetpoint());
         telemetry.addData("rtBoolean:", rtBool);
         telemetry.addData("ltBoolean:", ltBool);
-        telemetry.addData("Extensor state:", func.extensorState);
-        //telemetry.addData("blue:",func.colorSensor.blue());
-        //telemetry.addData("red:",func.colorSensor.red());
-        //telemetry.addData("green:",func.colorSensor.green());
+        //telemetry.addData("Extensor state:", func.extensorState);
         telemetry.addData("poz gheruta:",func.gheruta.getPosition());
         telemetry.addData("poz articulatie:",func.articulatieGheruta.getPosition());
         telemetry.addData("poz brat:",func.pozArm);
-        telemetry.addData("poz extindere:",func.pozExtindere);
-        telemetry.addData("extindere R:", func.extindereR.getPosition());
-        telemetry.addData("extindere L:", func.extindereL.getPosition());
-        telemetry.addData("intakeR:",func.intakeR.getPosition());
-        telemetry.addData("intakeL:",func.intakeL.getPosition());
-        telemetry.addData("taci:",func.touchL.getValue());
+        telemetry.addData("poz rotatie gheruta :",func.pozRotClaw);
+        telemetry.addData("poz brat:",func.pozArm);
+        telemetry.addData("poz articulatie fata:",func.pozArtClaw);
+        telemetry.addData("poz rotatie fata:",func.pozRotatie);
+        telemetry.addData("poz gheruta fata:",func.pozGheruta2);
+        //telemetry.addData("poz extindere:",func.pozExtindere);
+        //telemetry.addData("extindere R:", func.extindereR.getPosition());
+        //telemetry.addData("extindere L:", func.extindereL.getPosition());
         telemetry.addData("right:",right.getCurrentPosition());
         telemetry.addData("left:",left.getCurrentPosition());
         telemetry.addData("front:",front.getCurrentPosition());
