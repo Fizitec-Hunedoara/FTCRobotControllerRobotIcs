@@ -53,12 +53,6 @@ public class TeleOpRosu extends OpMode {
         @Override
         public void run() {
             while (!stop) {
-                if(gamepad1.left_bumper){
-                    sm = slowSm;
-                }
-                else if (gamepad1.right_bumper){
-                    sm = fastSm;
-                }
 
                 y  = -gamepad1.left_stick_y;
                 x  = gamepad1.left_stick_x ;
@@ -132,7 +126,7 @@ public class TeleOpRosu extends OpMode {
                 func.armR.setPosition(func.pozArm);
 
                 if(gamepad2.dpad_up && !apasat && lastTime + 500 < System.currentTimeMillis()){
-                    func.intaketogheara();
+                    func.ghearatogheara();
                     apasat = true;
                     lastTime = System.currentTimeMillis();
                 }
@@ -143,23 +137,44 @@ public class TeleOpRosu extends OpMode {
                 }
                 if(gamepad2.dpad_down){
                     func.deschidere();
-                    func.pozArm = 0.2              ;
+                    func.pozArm = 0.2;
                     func.pozArticulator = 0.1;
                 }
-                 if(gamepad1.a && !initial && lastTime + 500 < System.currentTimeMillis()){
-                     func.samples();
-                     initial = true;
+                if(gamepad1.a && initial1 && lastTime + 500 < System.currentTimeMillis()){
+                     func.luat();
+                     initial1 = false;
                      lastTime = System.currentTimeMillis();
                 }
-                if(gamepad1.b && !initial1 && lastTime + 500 < System.currentTimeMillis()){
-                    func.luat();
+                else if (gamepad1.a && !initial1 && lastTime + 300 < System.currentTimeMillis()) {
+                    func.samples();
                     initial1 = true;
                     lastTime = System.currentTimeMillis();
                 }
-                else if (gamepad1.b && initial1 && lastTime + 300 < System.currentTimeMillis()) {
-                    func.initiala();
+                if(gamepad1.b && initial1 && lastTime + 500 < System.currentTimeMillis()){
+                    func.intermediar();
                     initial1 = false;
                     lastTime = System.currentTimeMillis();
+                }
+                else if (gamepad1.b && !initial1 && lastTime + 300 < System.currentTimeMillis()) {
+                    func.initiala();
+                    initial1 = true;
+                    lastTime = System.currentTimeMillis();
+                }
+                if(gamepad1.left_bumper)
+                    func.dreapta();
+
+                else
+                    func.mijloc();
+
+                if(gamepad1.right_bumper)
+                    func.stanga();
+
+
+                if(gamepad1.dpad_up){
+                    func.claw2.setPosition(0.64);
+                }
+                if(gamepad1.dpad_down){
+                    func.claw2.setPosition(0.855);
                 }
 
                 if(gamepad2.dpad_left){
@@ -174,6 +189,7 @@ public class TeleOpRosu extends OpMode {
                         lastTime = System.currentTimeMillis();
                     }
                 }
+
                 if(gamepad2.dpad_right){
                     func.puspebara();
                 }
@@ -213,27 +229,24 @@ public class TeleOpRosu extends OpMode {
                     }
                     ltBoolLast = ltBool;
                 }
-                if(gamepad1.dpad_up){
-                    func.deschis();
-                }
-                if(gamepad1.dpad_down){
-                    func.inchis();
-                }
+
                 func.setExtinderePoz();
+
                 /*if(gamepad1.a && func.pozArtClaw < 1){
                     func.pozArtClaw += 0.005;
                 }
                 if(gamepad1.b && func.pozArtClaw > 0){
                     func.pozArtClaw -= 0.005;
-                }
-                if(gamepad1.dpad_up && func.pozRotatie < 1){
+                }*/
+
+                /*if(gamepad1.a && func.pozRotatie < 1){
                     func.pozRotatie += 0.005;
                 }
-                if(gamepad1.dpad_down && func.pozRotatie > 0){
+                if(gamepad1.b && func.pozRotatie > 0){
                     func.pozRotatie -= 0.005;
-                }
+                }*/
 
-                if(gamepad1.dpad_left && func.pozRotClaw < 1){
+                /*if(gamepad1.dpad_left && func.pozRotClaw < 1){
                     func.pozRotClaw += 0.005;
                 }
                 if(gamepad1.dpad_right && func.pozRotClaw > 0){
@@ -245,8 +258,6 @@ public class TeleOpRosu extends OpMode {
                 func.articulatieClaw2.setPosition(func.pozArtClaw);
                 func.rotatieClaw2.setPosition(func.pozRotClaw);
                 func.rotatiefata.setPosition(func.pozRotatie);
-                func.claw2.setPosition(func.pozGheruta2);
-
             }
 
         }

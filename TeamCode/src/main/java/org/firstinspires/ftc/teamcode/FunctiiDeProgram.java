@@ -32,7 +32,7 @@ public class FunctiiDeProgram {
     public double sliderTargetPoz = 0;
     LinearOpMode opMode;
     public ExtensorState extensorState = ExtensorState.RETRACTED;
-    public double pozGheruta = 0.3, pozArticulator = 0.1, pozArm = 0.2, pozExtindere = 0.0, pozRotatie = 0.89, pozGheruta2 = 0.855, pozArtClaw = 0.05, pozRotClaw = 0.83;
+    public double pozGheruta = 0.3, pozArticulator = 0.1, pozArm = 0.3, pozExtindere = 0.0, pozRotatie = 0, pozGheruta2 = 0.855, pozArtClaw = 0.0, pozRotClaw = 0.185;
     public FunctiiDeProgram() {
     }
 
@@ -127,70 +127,10 @@ public class FunctiiDeProgram {
             throw new NullPointerException("Bro sasiul nu e initializat");
         }
     }
-
-    public void ansamblul_leleseana(int poz1, int pow, double tolerance) {
-        if (poz1 > sliderR.getCurrentPosition()) {
-            while (sliderR.getCurrentPosition() < poz1 && !isStopRequested) {
-                sliderR.setPower(pow);
-                sliderL.setPower(pow);
-            }
-        }
-        else {
-            while (sliderR.getCurrentPosition() > poz1 + tolerance && !isStopRequested) {
-                sliderR.setPower(-pow);
-                sliderL.setPower(-pow);
-            }
-        }
-
-//            while (slider1.getCurrentPosition() > poz1 || slider1.getCurrentPosition() < poz1 + tolerance){
-//                slider2.setVelocity(-vel);
-//                slider1.setVelocity(-vel);
-//            }
-        sliderR.setPower(0);
-        sliderL.setPower(0);
-
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-//        sliderR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-//        sliderL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-        ceva = true;
+    public synchronized void setSliderPower(double power){
+        sliderR.setPower(power);
+        sliderL.setPower(power);
     }
-
-    public void ansamblul_leleseana_auto(int poz1, int pow, double tolerance) {
-
-        if (poz1 > sliderR.getCurrentPosition()) {
-            while (sliderR.getCurrentPosition() < poz1 && this.opMode.opModeIsActive()) {
-                sliderR.setPower(pow);
-                sliderL.setPower(pow);
-            }
-
-        }
-        else {
-            while (sliderR.getCurrentPosition() > poz1 + tolerance && this.opMode.opModeIsActive()) {
-                sliderR.setVelocity(-pow);
-                sliderR.setVelocity(-pow);
-            }
-        }
-
-//            while (slider1.getCurrentPosition() > poz1 || slider1.getCurrentPosition() < poz1 + tolerance){
-//                slider2.setVelocity(-vel);
-//                slider1.setVelocity(-vel);
-//            }
-        sliderR.setPower(0);
-        sliderL.setPower(0);
-        kdf_auto(100);
-        //SpateStanga.setPosition(poz_servo_st);
-        //SpateDreapta.setPosition(poz_servo_dr);
-//        sliderR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-//        sliderL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-        ceva = true;
-    }
-
     public synchronized void targetSlider(double poz, double pow, double t, int tolerance) {
         automatizare = true;
         if (sliderR.getCurrentPosition() < poz) {
@@ -302,28 +242,39 @@ public class FunctiiDeProgram {
     public void inchidere() {
         pozGheruta = 0;
     }
-    public void deschis(){ pozGheruta2 = 0.64; }
-    public void inchis(){ pozGheruta2 = 0.855; }
+    //public void deschis(){ pozGheruta2 = 0.64; }
+    //public void inchis(){ pozGheruta2 = 0.855; }
+    public void stanga(){
+        pozRotClaw = 0;
+    }
+    public void dreapta(){
+        pozRotClaw = 0.35;
+    }
+    public void mijloc(){
+        pozRotClaw = 0.185;
+    }
 
-    public void intaketogheara(){
+    public void ghearatogheara(){
         Thread t1 = new Thread(() -> {
-            pozArm = 0.2;
-            pozArticulator = 0.1;
+            pozArm = 0.13;
+            pozArticulator = 0;
             kdf(200);
             inchidere();
+            kdf(248);
+            claw2.setPosition(0.855);
         });
         t1.start();
     }
     public void ghearatocos(){
-        pozArm = 0.1;
-        pozArticulator = 0.4;
+        pozArm = 0.5;
+        pozArticulator = 0.56;
+
     }
     public void gardtogheara(){
         Thread t1 = new Thread(() -> {
             pozArticulator = 0.465;
             kdf(200);
             pozArm = 0.07;
-            kdf(200);
         });
         t1.start();
     }
@@ -366,10 +317,18 @@ public class FunctiiDeProgram {
             kdf(200);
             pozArticulator = 0.3;
             pozArm = 0.3;
+            /*kdf(500);
+            deschidere();*/
+        });
+        t1.start();
+    }
+    public void puspebaraintermediar(){
+        Thread t1 = new Thread(() -> {
+            pozArticulator = 0.3;
+            pozArm = 0.3;
             kdf(500);
             deschidere();
         });
-        t1.start();
     }
     public void puspebara_auto(){
         pozArticulator = 0.6;
@@ -382,28 +341,31 @@ public class FunctiiDeProgram {
     }
 
     public void initiala(){
-        Thread t1 = new Thread(() -> {
-            pozRotClaw = 0.83;
-            pozArtClaw = 0.05;
-            pozRotatie = 0.89;
-        });
-        t1.start();
+        pozRotClaw = 0.18;
+        pozArtClaw = 0.03;
+        pozRotatie = 0;
     }
     public void samples(){
-        Thread t1 = new Thread(() -> {
-            pozRotClaw = 0.84;
-            pozArtClaw = 0.1;
-            pozRotatie = 0.26;
-        });
-        t1.start();
+        pozRotClaw = 0.18;
+        pozArtClaw = 0.1;
+        pozRotatie = 0.685;
     }
     public void luat(){
         Thread t1 = new Thread(() -> {
-            pozRotClaw = 0.84;
-            pozArtClaw = 0.19;
-            pozRotatie = 0.2;
+            claw2.setPosition(0.855);
+            pozRotClaw = 0.18;
+            pozArtClaw = 0.05;
+            pozRotatie = 0.77;
+            kdf(500);
+            claw2.setPosition(0.64);
         });
         t1.start();
+    }
+    public void intermediar(){
+        claw2.setPosition(0.64);
+        pozRotClaw = 0.18;
+        pozArtClaw = 0.05;
+        pozRotatie = 0.45;
     }
 
     public void kdf(long t) {
@@ -424,11 +386,11 @@ public class FunctiiDeProgram {
                 break;
             case HALF_EXTENDED:
                 extindereL.setPosition(0.17);
-                extindereR.setPosition(0.75);
+                extindereR.setPosition(0.85);
                 break;
             case FULL_EXTENDED:
                 extindereL.setPosition(0.275);
-                extindereR.setPosition(0.73);
+                extindereR.setPosition(0.79);
                 break;
         }
     }
