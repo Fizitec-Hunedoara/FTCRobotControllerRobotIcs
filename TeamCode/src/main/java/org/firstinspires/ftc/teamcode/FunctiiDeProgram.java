@@ -248,17 +248,17 @@ public class FunctiiDeProgram {
     public synchronized void target_auto(double poz, double vel, DcMotorEx motor, double t, int tolerance) {
         double lastTime = System.currentTimeMillis();
         if (motor.getCurrentPosition() < poz) {
-            /*if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
+            if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 12){
                 poz = poz * 0.9;
-            }*/
+            }
             while (opMode.opModeIsActive() && motor.getCurrentPosition() < poz - tolerance && lastTime + t > System.currentTimeMillis()) {
                 motor.setVelocity(vel);
             }
         }
         else {
-            /*if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 13){
+            if(hardwareMap.voltageSensor.iterator().next().getVoltage() < 12){
                 poz = poz * 1.1;
-            }*/
+            }
             while (opMode.opModeIsActive() && motor.getCurrentPosition() > poz + tolerance && lastTime + t > System.currentTimeMillis()) {
                 motor.setVelocity(-vel);
             }
@@ -415,15 +415,15 @@ public class FunctiiDeProgram {
     public void setExtinderePoz() {
         switch (extensorState) {
             case RETRACTED:
-                extindereL.setPosition(0.01);
+                extindereL.setPosition(0.048);
                 extindereR.setPosition(0.99);
                 break;
             case HALF_EXTENDED:
-                extindereL.setPosition(0.17);
+                extindereL.setPosition(0.183);
                 extindereR.setPosition(0.85);
                 break;
             case FULL_EXTENDED:
-                extindereL.setPosition(0.275);
+                extindereL.setPosition(0.251);
                 extindereR.setPosition(0.79);
                 break;
         }

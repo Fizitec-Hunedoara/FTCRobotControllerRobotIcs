@@ -18,7 +18,6 @@ public class TeleOpRosu extends OpMode {
     private final double slowSm = 0.4, fastSm = 1;
     private final double histInterval = 0.2;
     private double pmotorFL, pmotorFR, pmotorBL, pmotorBR;
-    GoBildaPinpointDriver odo;
     double sm = 1.0;
     double y, x, rx;
     double max = 0.0;
@@ -146,12 +145,12 @@ public class TeleOpRosu extends OpMode {
                     lastTime = System.currentTimeMillis();
                 }
                 if(gamepad1.b && initial1 && lastTime + 500 < System.currentTimeMillis()){
-                    func.intermediar();
+                    func.initiala();
                     initial1 = false;
                     lastTime = System.currentTimeMillis();
                 }
                 else if (gamepad1.b && !initial1 && lastTime + 300 < System.currentTimeMillis()) {
-                    func.initiala();
+                    func.intermediar();
                     initial1 = true;
                     lastTime = System.currentTimeMillis();
                 }
