@@ -5,11 +5,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous
 public class autonom400 extends LinearOpMode {
-
+    FunctiiDeProgram func = new FunctiiDeProgram(this);
+    int i=0;
     @Override
     public void runOpMode() throws InterruptedException {
-
-        telemetry.addData("mda", "am facut" +  "de puncte");
-        telemetry.update();
         waitForStart();
+        while(func.opMode.opModeIsActive()){
+            i++;
+            telemetry.addData("mda", "am facut " + i + " de puncte");
+            telemetry.update();
+            func.kdf_auto(50);
+        }
 }}

@@ -38,7 +38,7 @@ public class TeleOpRosu extends OpMode {
     public void init() {
         left = new Encoder(hardwareMap.get(DcMotorEx.class, "BL"));
         right = new Encoder(hardwareMap.get(DcMotorEx.class, "FR"));
-        front = new Encoder(hardwareMap.get(DcMotorEx.class, "FL"));
+        front = new Encoder(hardwareMap.get(DcMotorEx.class, "BR"));
 
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
         func.init(hardwareMap,telemetry,true);
@@ -46,7 +46,6 @@ public class TeleOpRosu extends OpMode {
     public void start() {
         Chassis.start();
         Systems.start();
-
     }
     private final Thread Chassis = new Thread(new Runnable() {
         @Override
@@ -155,13 +154,13 @@ public class TeleOpRosu extends OpMode {
                     lastTime = System.currentTimeMillis();
                 }
                 if(gamepad1.left_bumper)
-                    func.dreapta();
+                    func.stanga();
 
                 else
                     func.mijloc();
 
                 if(gamepad1.right_bumper)
-                    func.stanga();
+                    func.dreapta();
 
 
                 if(gamepad1.dpad_up){
@@ -204,9 +203,6 @@ public class TeleOpRosu extends OpMode {
                 if(rtBool != rtBoolLast){
                     if(rtBool){
                         if(func.extensorState == ExtensorState.RETRACTED){
-                            func.extensorState = ExtensorState.HALF_EXTENDED;
-                        }
-                        else if(func.extensorState == ExtensorState.HALF_EXTENDED){
                             func.extensorState = ExtensorState.FULL_EXTENDED;
                         }
                     }
@@ -215,9 +211,6 @@ public class TeleOpRosu extends OpMode {
                 if(ltBool != ltBoolLast){
                     if(ltBool){
                         if(func.extensorState == ExtensorState.FULL_EXTENDED){
-                            func.extensorState = ExtensorState.HALF_EXTENDED;
-                        }
-                        else if(func.extensorState == ExtensorState.HALF_EXTENDED){
                             func.extensorState = ExtensorState.RETRACTED;
                         }
                     }
@@ -264,7 +257,7 @@ public class TeleOpRosu extends OpMode {
         telemetry.addData("setPoint:",pid.getSetpoint());
         telemetry.addData("rtBoolean:", rtBool);
         telemetry.addData("ltBoolean:", ltBool);
-        //telemetry.addData("Extensor state:", func.extensorState);
+        telemetry.addData("Extensor state:", func.extensorState);
         telemetry.addData("poz gheruta sus:",func.gherutaSus.getPosition());
         //telemetry.addData("poz articulatie:",func.articulatieGheruta.getPosition());
         telemetry.addData("poz brat:",func.pozArm);
@@ -279,6 +272,11 @@ public class TeleOpRosu extends OpMode {
         telemetry.addData("right:",right.getCurrentPosition());
         telemetry.addData("left:",left.getCurrentPosition());
         telemetry.addData("front:",front.getCurrentPosition());
+        telemetry.addData("ceva pid",func.ceva);
+        telemetry.addData("atins",func.atins());
+        telemetry.addData("touch L",func.touchL.isPressed());
+        telemetry.addData("touch R",func.touchR.isPressed());
+        telemetry.addData("rotire gheruta",func.pozRotatieGhearaJos);
         telemetry.update();
     }
 }

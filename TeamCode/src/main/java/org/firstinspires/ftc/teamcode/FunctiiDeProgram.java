@@ -25,8 +25,7 @@ public class FunctiiDeProgram {
     public DcMotorEx motorBL, motorBR, motorFL, motorFR, sliderL, sliderR;
     public Servo articulatieGherutaSus, gherutaSus, extindereR, extindereL, armL, armR,  rotatieGherutaJos, gherutaJos, articulatieGherutaJos, rotatiefata;
     public boolean automatizare = false, ceva = false, extins = false, initExtins = false;
-    public ColorSensor colorSensor;
-    TouchSensor touchL,touchR;
+    public TouchSensor touchL,touchR;
     private boolean sasiuInited;
     private boolean isStopRequested = false;
     public double sliderTargetPoz = 0;
@@ -98,16 +97,6 @@ public class FunctiiDeProgram {
         motorBR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorFL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-
-        /*motorFR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);*/
-
-        /*motorFR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorFL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);*/
 
         motorFR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -279,13 +268,13 @@ public class FunctiiDeProgram {
     //public void deschis(){ pozGherutaJos = 0.64; }
     //public void inchis(){ pozGherutaJos = 0.855; }
     public void stanga(){
-        pozRotatieGhearaJos = 0;
+        pozRotatieGhearaJos = 0.05;
     }
     public void dreapta(){
-        pozRotatieGhearaJos = 0.35;
+        pozRotatieGhearaJos = 0.45;
     }
     public void mijloc(){
-        pozRotatieGhearaJos = 0.185;
+        pozRotatieGhearaJos = 0.23;
     }
 
     public void ghearatogheara(){
@@ -306,7 +295,7 @@ public class FunctiiDeProgram {
     }
     public void gardtogheara(){
         Thread t1 = new Thread(() -> {
-            pozArticulatorSus = 0.465;
+            pozArticulatorSus = 0.49;
             kdf(200);
             pozArm = 0.07;
         });
@@ -415,12 +404,8 @@ public class FunctiiDeProgram {
     public void setExtinderePoz() {
         switch (extensorState) {
             case RETRACTED:
-                extindereL.setPosition(0.048);
-                extindereR.setPosition(0.99);
-                break;
-            case HALF_EXTENDED:
-                extindereL.setPosition(0.183);
-                extindereR.setPosition(0.85);
+                extindereL.setPosition(0.07);
+                extindereR.setPosition(0.97);
                 break;
             case FULL_EXTENDED:
                 extindereL.setPosition(0.251);
