@@ -26,11 +26,10 @@ public class TeleOpRosu extends OpMode {
     boolean stop = false, puneBara = false;
     boolean apasat = false;
     boolean initial = false;
-    boolean initial1 = false;
     private boolean rtBool, ltBool, rtBoolLast = false, ltBoolLast = false;
     private long extensorExtensionTriggerTime, extensorRetractionTriggerTime;
     private boolean extensorExtensionOverride = false, extensorRetractionOverride = false;
-    public double pidResult;
+    public double pidResult, ok = 0;
     //public double powIntake = 0.0;
     long lastTime = 0;
     private Encoder right,left,front;
@@ -90,7 +89,11 @@ public class TeleOpRosu extends OpMode {
             pid.enable();
             while (!stop) {
                 pid.setPID(pslider, islider, dslider);
-                if (gamepad2.right_stick_y != 0.0) {
+                if(ok == 0){
+                    func.targetSliderJos(1,2000);
+                    ok = 1;
+                }
+                else if (gamepad2.right_stick_y != 0.0) {
                     func.setSliderPower(gamepad2.right_stick_y);
                     func.ceva = true;
                 }
@@ -114,6 +117,7 @@ public class TeleOpRosu extends OpMode {
                 if(gamepad2.left_bumper){
                     func.pozGherutaSus = 0.3;
                 }
+
                 func.setGherutaSusPosition(func.pozGherutaSus);
 
                 func.setArmPosition(func.pozArm);
@@ -133,35 +137,33 @@ public class TeleOpRosu extends OpMode {
                     func.pozArm = 0.2;
                     func.pozArticulatorSus = 0.1;
                 }
-                if(gamepad1.a && initial1 && lastTime + 500 < System.currentTimeMillis()){
+                if(gamepad1.a && initial && lastTime + 500 < System.currentTimeMillis()){
                      func.luat();
-                     initial1 = false;
+                     initial = false;
                      lastTime = System.currentTimeMillis();
                 }
-                else if (gamepad1.a && !initial1 && lastTime + 300 < System.currentTimeMillis()) {
+                else if (gamepad1.a && !initial && lastTime + 300 < System.currentTimeMillis()) {
                     func.samples();
-                    initial1 = true;
+                    initial = true;
                     lastTime = System.currentTimeMillis();
                 }
-                if(gamepad1.b && initial1 && lastTime + 500 < System.currentTimeMillis()){
+                if(gamepad1.b && initial && lastTime + 500 < System.currentTimeMillis()){
                     func.initiala();
-                    initial1 = false;
+                    initial = false;
                     lastTime = System.currentTimeMillis();
                 }
-                else if (gamepad1.b && !initial1 && lastTime + 300 < System.currentTimeMillis()) {
+                else if (gamepad1.b && !initial && lastTime + 300 < System.currentTimeMillis()) {
                     func.intermediar();
-                    initial1 = true;
+                    initial = true;
                     lastTime = System.currentTimeMillis();
                 }
-                if(gamepad1.left_bumper)
-                    func.stanga();
 
+                if(gamepad1.left_bumper)
+                    func.dreapta();
                 else
                     func.mijloc();
-
                 if(gamepad1.right_bumper)
-                    func.dreapta();
-
+                    func.stanga();
 
                 if(gamepad1.dpad_up){
                     func.gherutaJos.setPosition(0.64);
@@ -186,23 +188,30 @@ public class TeleOpRosu extends OpMode {
                 if(gamepad2.dpad_right){
                     func.puspebara();
                 }
+                if(gamepad2.y) {
+                    func.gherutaJos.setPosition(0.855);
+                }
 
-                if(gamepad1.right_trigger > (0.5 + histInterval / 2.0)) {
+                if(gamepad2.right_trigger > (0.5 + histInterval / 2.0)) {
                     rtBool = true;
                 }
-                else if (gamepad1.right_trigger < (0.5 - histInterval / 2.0)){
+                else if (gamepad2.right_trigger < (0.5 - histInterval / 2.0)){
                     rtBool = false;
                 }
-                if(gamepad1.left_trigger > (0.5 + histInterval / 2.0)) {
+                if(gamepad2.left_trigger > (0.5 + histInterval / 2.0)) {
                     ltBool = true;
                 }
-                else if (gamepad1.left_trigger < (0.5 - histInterval / 2.0)){
+                else if (gamepad2.left_trigger < (0.5 - histInterval / 2.0)){
                     ltBool = false;
                 }
+
 
                 if(rtBool != rtBoolLast){
                     if(rtBool){
                         if(func.extensorState == ExtensorState.RETRACTED){
+                            func.extensorState = ExtensorState.HALF_EXTENDED;
+                        }
+                        else if(func.extensorState == ExtensorState.HALF_EXTENDED){
                             func.extensorState = ExtensorState.FULL_EXTENDED;
                         }
                     }
@@ -211,6 +220,9 @@ public class TeleOpRosu extends OpMode {
                 if(ltBool != ltBoolLast){
                     if(ltBool){
                         if(func.extensorState == ExtensorState.FULL_EXTENDED){
+                            func.extensorState = ExtensorState.HALF_EXTENDED;
+                        }
+                        else if(func.extensorState == ExtensorState.HALF_EXTENDED){
                             func.extensorState = ExtensorState.RETRACTED;
                         }
                     }
@@ -272,7 +284,7 @@ public class TeleOpRosu extends OpMode {
         telemetry.addData("right:",right.getCurrentPosition());
         telemetry.addData("left:",left.getCurrentPosition());
         telemetry.addData("front:",front.getCurrentPosition());
-        telemetry.addData("ceva pid",func.ceva);
+        telemetry.addData("PID",func.ceva);
         telemetry.addData("atins",func.atins());
         telemetry.addData("touch L",func.touchL.isPressed());
         telemetry.addData("touch R",func.touchR.isPressed());

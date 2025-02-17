@@ -31,7 +31,7 @@ public class FunctiiDeProgram {
     public double sliderTargetPoz = 0;
     LinearOpMode opMode;
     public ExtensorState extensorState = ExtensorState.RETRACTED;
-    public double pozGherutaSus = 0.3, pozArticulatorSus = 0.1, pozArm = 0.3, pozExtindere = 0.0, pozRotatie = 0, pozGherutaJos = 0.855, pozArticulatorJos = 0.0, pozRotatieGhearaJos = 0.185;
+    public double pozGherutaSus = 0, pozArticulatorSus = 0.1, pozArm = 0.3, pozExtindere = 0.0, pozRotatie = 0, pozGherutaJos = 0.855, pozArticulatorJos = 0.0, pozRotatieGhearaJos = 0.185;
     public FunctiiDeProgram() {
     }
 
@@ -197,14 +197,17 @@ public class FunctiiDeProgram {
     }
 
     public synchronized void targetSliderJos(double pow, double t) {
-        automatizare = true;
-
-        sliderL.setPower(pow);
-        sliderR.setPower(pow);
-
-        double lastTime = System.currentTimeMillis();
-        sliderR.setPower(0);
-        sliderL.setPower(0);
+        Thread t1 = new Thread(() -> {
+            automatizare = true;
+            double lastTime = System.currentTimeMillis();
+            while (!atins() && lastTime + t > System.currentTimeMillis()) {
+                sliderL.setPower(pow);
+                sliderR.setPower(pow);
+            }
+            sliderR.setPower(0);
+            sliderL.setPower(0);
+        });
+        t1.start();
         //ceva = true;
     }
 
@@ -295,16 +298,17 @@ public class FunctiiDeProgram {
     }
     public void gardtogheara(){
         Thread t1 = new Thread(() -> {
-            pozArticulatorSus = 0.49;
+            pozArticulatorSus = 0.6;
             kdf(200);
-            pozArm = 0.07;
+            pozArm = 0.05;
         });
         t1.start();
     }
     public void gardtogheara_auto(){
-        pozArticulatorSus = 0.465;
+        deschidere();
+        pozArticulatorSus = 0.6;
         kdf_auto(200);
-        pozArm = 0.07;
+        pozArm = 0.05;
         kdf_auto(200);
     }
     public void ghearapozbara(){
@@ -313,10 +317,10 @@ public class FunctiiDeProgram {
             kdf(200);
             pozArticulatorSus = 0.7054;
             pozArm = 0.49;
-            kdf(500);
-            pozGherutaSus = 0.13;
-            kdf(200);
-            inchidere();
+            kdf(800);
+            pozGherutaSus = 0.06;
+            kdf(50);
+            pozGherutaSus = 0;
         });
         t1.start();
     }
@@ -325,10 +329,10 @@ public class FunctiiDeProgram {
         kdf_auto(200);
         pozArticulatorSus = 0.7054;
         pozArm = 0.49;
-        kdf_auto(500);
+        kdf_auto(600);
         if(release) {
             pozGherutaSus = 0.13;
-            kdf_auto(200);
+            kdf_auto(50);
         }
         inchidere();
     }
@@ -340,18 +344,10 @@ public class FunctiiDeProgram {
             kdf(200);
             pozArticulatorSus = 0.3;
             pozArm = 0.3;
-            /*kdf(500);
-            deschidere();*/
+            kdf(500);
+            inchidere();
         });
         t1.start();
-    }
-    public void puspebaraintermediar(){
-        Thread t1 = new Thread(() -> {
-            pozArticulatorSus = 0.3;
-            pozArm = 0.3;
-            kdf(500);
-            deschidere();
-        });
     }
     public void puspebara_auto(){
         pozArticulatorSus = 0.6;
@@ -371,15 +367,15 @@ public class FunctiiDeProgram {
     public void samples(){
         pozRotatieGhearaJos = 0.18;
         pozArticulatorJos = 0.1;
-        pozRotatie = 0.685;
+        pozRotatie = 0.35;
     }
     public void luat(){
         Thread t1 = new Thread(() -> {
             gherutaJos.setPosition(0.855);
             pozRotatieGhearaJos = 0.18;
             pozArticulatorJos = 0.05;
-            pozRotatie = 0.77;
-            kdf(500);
+            pozRotatie = 0.49;
+            kdf(350);
             gherutaJos.setPosition(0.64);
         });
         t1.start();
@@ -404,8 +400,12 @@ public class FunctiiDeProgram {
     public void setExtinderePoz() {
         switch (extensorState) {
             case RETRACTED:
-                extindereL.setPosition(0.07);
-                extindereR.setPosition(0.97);
+                extindereL.setPosition(0.05);
+                extindereR.setPosition(0.975);
+                break;
+            case HALF_EXTENDED:
+                extindereL.setPosition(0.151);
+                extindereR.setPosition(0.89);
                 break;
             case FULL_EXTENDED:
                 extindereL.setPosition(0.251);
