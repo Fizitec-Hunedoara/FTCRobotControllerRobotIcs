@@ -24,7 +24,7 @@ public class FunctiiDeProgram {
     private Telemetry telemetry;
     public DcMotorEx motorBL, motorBR, motorFL, motorFR, sliderL, sliderR;
     public Servo articulatieGherutaSus, gherutaSus, extindereR, extindereL, armL, armR,  rotatieGherutaJos, gherutaJos, articulatieGherutaJos, rotatiefata;
-    public boolean automatizare = false, ceva = false, extins = false, initExtins = false;
+    public boolean automatizare = false, setpointNotActive = false, extins = false, initExtins = false;
     public TouchSensor touchL,touchR;
     private boolean sasiuInited;
     private boolean isStopRequested = false;
@@ -172,7 +172,7 @@ public class FunctiiDeProgram {
         sliderR.setPower(0);
         sliderL.setPower(0);
         automatizare = false;
-        ceva = true;
+        setpointNotActive = true;
     }
 
     public synchronized void targetSlider_auto(double poz, double pow, double t, int tolerance) {
@@ -180,14 +180,14 @@ public class FunctiiDeProgram {
         double lastTime = System.currentTimeMillis();
         if (sliderR.getCurrentPosition() < poz) {
             while (sliderR.getCurrentPosition() < poz - tolerance && opMode.opModeIsActive() && lastTime + t > System.currentTimeMillis()) {
-                sliderR.setPower(-pow);
-                sliderL.setPower(-pow);
+                sliderR.setPower(pow);
+                sliderL.setPower(pow);
             }
         }
         else {
             while (sliderR.getCurrentPosition() > poz + tolerance && opMode.opModeIsActive() && lastTime + t > System.currentTimeMillis()) {
-                sliderL.setPower(pow);
-                sliderR.setPower(pow);
+                sliderL.setPower(-pow);
+                sliderR.setPower(-pow);
             }
         }
         sliderR.setPower(0);
@@ -214,6 +214,10 @@ public class FunctiiDeProgram {
     public synchronized void targetSliderJos_auto(double pow, double t) {
         automatizare = true;
         double lastTime = System.currentTimeMillis();
+        while (!atins() && lastTime + t > System.currentTimeMillis()) {
+            sliderL.setPower(pow);
+            sliderR.setPower(pow);
+        }
         sliderR.setPower(0);
         sliderL.setPower(0);
         sliderTargetPoz = 0;
@@ -234,7 +238,7 @@ public class FunctiiDeProgram {
             }
         }
         motor.setVelocity(0);
-        ceva = true;
+        setpointNotActive = true;
     }
 
     public synchronized void target_auto(double poz, double vel, DcMotorEx motor, double t, int tolerance) {
@@ -291,11 +295,31 @@ public class FunctiiDeProgram {
         });
         t1.start();
     }
+    public void ghearatogheara_auto(){
+        pozArm = 0.15;
+        pozArticulatorSus = 0.05;
+        kdf_auto(1200);
+        inchidere();
+        kdf_auto(248);
+        pozGherutaJos=0.855;
+    }
     public void ghearatocos(){
         pozArm = 0.5;
         pozArticulatorSus = 0.56;
-
     }
+    public void ghearatocos_auto(){
+        pozArm = 0.56;
+        pozArticulatorSus = 0.56;
+        kdf_auto(800);
+        deschidere();
+        kdf_auto(200);
+    }
+    public void initial_auto(){
+        deschidere();
+        pozArm = 0.2;
+        pozArticulatorSus = 0.1;
+    }
+
     public void gardtogheara(){
         Thread t1 = new Thread(() -> {
             pozArticulatorSus = 0.6;
@@ -320,7 +344,7 @@ public class FunctiiDeProgram {
             kdf(800);
             pozGherutaSus = 0.06;
             kdf(50);
-            pozGherutaSus = 0;
+            pozGherutaSus = 0; 
         });
         t1.start();
     }
@@ -360,9 +384,9 @@ public class FunctiiDeProgram {
     }
 
     public void initiala(){
-        pozRotatieGhearaJos = 0.18;
+        pozRotatieGhearaJos = 0.185;
         pozArticulatorJos = 0.03;
-        pozRotatie = 0;
+        pozRotatie = 0.0;
     }
     public void samples(){
         pozRotatieGhearaJos = 0.18;
@@ -380,11 +404,29 @@ public class FunctiiDeProgram {
         });
         t1.start();
     }
+    public void luat_auto(){
+        pozGherutaJos = 0.855;
+        pozRotatieGhearaJos = 0.18;
+        pozArticulatorJos = 0.05;
+        pozRotatie = 0.45;
+        kdf_auto(350);
+        pozGherutaJos = 0.64;
+    }
     public void intermediar(){
         gherutaJos.setPosition(0.64);
         pozRotatieGhearaJos = 0.18;
         pozArticulatorJos = 0.05;
         pozRotatie = 0.45;
+    }
+    public void getSample(){
+        extensorState = ExtensorState.FULL_EXTENDED;
+        kdf_auto(500);
+        samples();
+        luat_auto();
+        kdf_auto(500);
+        extensorState = ExtensorState.RETRACTED;
+        initiala();
+        ghearatogheara_auto();
     }
 
     public void kdf(long t) {

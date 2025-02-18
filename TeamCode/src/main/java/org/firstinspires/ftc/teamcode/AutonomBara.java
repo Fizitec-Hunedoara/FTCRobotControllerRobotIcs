@@ -107,7 +107,6 @@ public class AutonomBara extends LinearOpMode {
             drive.followTrajectorySequence(ts7);
         }
         func.inchidere();
-
         drive.followTrajectorySequence(ts3);
         TrajectorySequence ts4 = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(42, -59, Math.toRadians(270)))

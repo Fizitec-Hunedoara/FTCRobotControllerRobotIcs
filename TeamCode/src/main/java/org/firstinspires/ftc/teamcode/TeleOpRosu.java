@@ -83,7 +83,6 @@ public class TeleOpRosu extends OpMode {
         }
     });
     private final Thread Systems = new Thread(new Runnable() {
-
         @Override
         public void run() {
             pid.enable();
@@ -95,11 +94,11 @@ public class TeleOpRosu extends OpMode {
                 }
                 else if (gamepad2.right_stick_y != 0.0) {
                     func.setSliderPower(gamepad2.right_stick_y);
-                    func.ceva = true;
+                    func.setpointNotActive = true;
                 }
                 else {
-                    if (func.ceva) {
-                        func.ceva = false;
+                    if (func.setpointNotActive) {
+                        func.setpointNotActive = false;
                         pid.setSetpoint((func.sliderR.getCurrentPosition() + func.sliderL.getCurrentPosition())/2.0);
                     }
                     else if(!func.atins()){
@@ -110,7 +109,7 @@ public class TeleOpRosu extends OpMode {
                         func.setSliderPower(0);
                     }
                 }
-
+    
                 if(gamepad2.right_bumper){
                     func.pozGherutaSus = 0;
                 }
@@ -205,7 +204,6 @@ public class TeleOpRosu extends OpMode {
                     ltBool = false;
                 }
 
-
                 if(rtBool != rtBoolLast){
                     if(rtBool){
                         if(func.extensorState == ExtensorState.RETRACTED){
@@ -284,7 +282,7 @@ public class TeleOpRosu extends OpMode {
         telemetry.addData("right:",right.getCurrentPosition());
         telemetry.addData("left:",left.getCurrentPosition());
         telemetry.addData("front:",front.getCurrentPosition());
-        telemetry.addData("PID",func.ceva);
+        telemetry.addData("PID",func.setpointNotActive);
         telemetry.addData("atins",func.atins());
         telemetry.addData("touch L",func.touchL.isPressed());
         telemetry.addData("touch R",func.touchR.isPressed());
