@@ -286,6 +286,7 @@ public class FunctiiDeProgram {
 
     public void ghearatogheara(){
         Thread t1 = new Thread(() -> {
+            deschidere();
             pozArm = 0.13;
             pozArticulatorSus = 0;
             kdf(200);
@@ -296,10 +297,10 @@ public class FunctiiDeProgram {
         t1.start();
     }
     public void ghearatogheara_auto(){
-        pozArm = 0.15;
-        pozArticulatorSus = 0.05;
-        kdf_auto(1200);
-        inchidere();
+        pozArm = 0.13;
+        pozArticulatorSus = 0.0;
+        kdf_auto(600);
+        pozGherutaSus = 0.0;
         kdf_auto(248);
         pozGherutaJos=0.855;
     }
@@ -308,7 +309,7 @@ public class FunctiiDeProgram {
         pozArticulatorSus = 0.56;
     }
     public void ghearatocos_auto(){
-        pozArm = 0.56;
+        pozArm = 0.53;
         pozArticulatorSus = 0.56;
         kdf_auto(800);
         deschidere();
@@ -330,7 +331,7 @@ public class FunctiiDeProgram {
     }
     public void gardtogheara_auto(){
         deschidere();
-        pozArticulatorSus = 0.6;
+        pozArticulatorSus = 0.54;
         kdf_auto(200);
         pozArm = 0.05;
         kdf_auto(200);
@@ -385,20 +386,20 @@ public class FunctiiDeProgram {
 
     public void initiala(){
         pozRotatieGhearaJos = 0.185;
-        pozArticulatorJos = 0.03;
+        pozArticulatorJos = 0.0;
         pozRotatie = 0.0;
     }
     public void samples(){
         pozRotatieGhearaJos = 0.18;
-        pozArticulatorJos = 0.1;
+        pozArticulatorJos = 0.04;
         pozRotatie = 0.35;
     }
     public void luat(){
         Thread t1 = new Thread(() -> {
             gherutaJos.setPosition(0.855);
             pozRotatieGhearaJos = 0.18;
-            pozArticulatorJos = 0.05;
-            pozRotatie = 0.49;
+            pozArticulatorJos = 0.0;
+            pozRotatie = 0.54;
             kdf(350);
             gherutaJos.setPosition(0.64);
         });
@@ -407,9 +408,9 @@ public class FunctiiDeProgram {
     public void luat_auto(){
         pozGherutaJos = 0.855;
         pozRotatieGhearaJos = 0.18;
-        pozArticulatorJos = 0.05;
-        pozRotatie = 0.45;
-        kdf_auto(350);
+        pozArticulatorJos = 0.0;
+        pozRotatie = 0.53;
+        kdf_auto(700);
         pozGherutaJos = 0.64;
     }
     public void intermediar(){
@@ -426,6 +427,7 @@ public class FunctiiDeProgram {
         kdf_auto(500);
         extensorState = ExtensorState.RETRACTED;
         initiala();
+        kdf(500);
         ghearatogheara_auto();
     }
 

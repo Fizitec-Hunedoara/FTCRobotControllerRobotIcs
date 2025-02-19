@@ -15,12 +15,12 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(50.11382049845574, 50.11382049845574, Math.toRadians(308.5209343088889), Math.toRadians(346.43243243243245), 15)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-32, -61.2, Math.toRadians(0)))
-                        .lineToLinearHeading(new Pose2d(-54, -55, Math.toRadians(50)))
-                        .lineToLinearHeading(new Pose2d(-47.5, -53, Math.toRadians(90)))
-                        .lineToLinearHeading(new Pose2d(-54, -55, Math.toRadians(50)))
-                        .lineToLinearHeading(new Pose2d(-58, -53, Math.toRadians(90)))
-                        .lineToLinearHeading(new Pose2d(-54, -55, Math.toRadians(50)))
-                        .lineToLinearHeading(new Pose2d(-58, -53, Math.toRadians(110)))
+                        .lineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(50)))
+                        .splineToLinearHeading(new Pose2d(-50, -57,Math.toRadians(90)), Math.toRadians(90))
+                        .lineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(50)))
+                        .lineToLinearHeading(new Pose2d(-58, -57, Math.toRadians(90)))
+                        .lineToLinearHeading(new Pose2d(-56, -54, Math.toRadians(50)))
+                        .lineToLinearHeading(new Pose2d(-58, -57, Math.toRadians(110)))
                         .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTOTHEDEEP_JUICE_DARK)
