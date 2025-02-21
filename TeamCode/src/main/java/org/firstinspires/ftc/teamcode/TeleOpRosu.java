@@ -109,6 +109,12 @@ public class TeleOpRosu extends OpMode {
                         func.setSliderPower(0);
                     }
                 }
+                if(gamepad2.left_stick_y != 0.0){
+                    func.setAgatarePower(gamepad2.left_stick_y);
+                }
+                else{
+                    func.setAgatarePower(0);
+                }
     
                 if(gamepad2.right_bumper){
                     func.pozGherutaSus = 0;
@@ -142,7 +148,7 @@ public class TeleOpRosu extends OpMode {
                      lastTime = System.currentTimeMillis();
                 }
                 else if (gamepad1.a && !initial && lastTime + 300 < System.currentTimeMillis()) {
-                    func.samples();
+                    func.intermediar();
                     initial = true;
                     lastTime = System.currentTimeMillis();
                 }
@@ -152,7 +158,7 @@ public class TeleOpRosu extends OpMode {
                     lastTime = System.currentTimeMillis();
                 }
                 else if (gamepad1.b && !initial && lastTime + 300 < System.currentTimeMillis()) {
-                    func.intermediar();
+                    func.samples();
                     initial = true;
                     lastTime = System.currentTimeMillis();
                 }
@@ -228,6 +234,7 @@ public class TeleOpRosu extends OpMode {
                 }
 
                 func.setExtinderePoz();
+
 
                 /*if(gamepad1.a && func.pozArtClaw < 1){
                     func.pozArtClaw += 0.005;

@@ -22,7 +22,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 public class FunctiiDeProgram {
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
-    public DcMotorEx motorBL, motorBR, motorFL, motorFR, sliderL, sliderR;
+    public DcMotorEx motorBL, motorBR, motorFL, motorFR, sliderL, sliderR, agatareL, agatareR;
     public Servo articulatieGherutaSus, gherutaSus, extindereR, extindereL, armL, armR,  rotatieGherutaJos, gherutaJos, articulatieGherutaJos, rotatiefata;
     public boolean automatizare = false, setpointNotActive = false, extins = false, initExtins = false;
     public TouchSensor touchL,touchR;
@@ -31,7 +31,7 @@ public class FunctiiDeProgram {
     public double sliderTargetPoz = 0;
     LinearOpMode opMode;
     public ExtensorState extensorState = ExtensorState.RETRACTED;
-    public double pozGherutaSus = 0, pozArticulatorSus = 0.1, pozArm = 0.3, pozExtindere = 0.0, pozRotatie = 0, pozGherutaJos = 0.855, pozArticulatorJos = 0.0, pozRotatieGhearaJos = 0.185;
+    public double pozGherutaSus = 0, pozArticulatorSus = 0.1, pozArm = 0.3, pozExtindere = 0.0, pozRotatie = 0, pozGherutaJos = 0.855, pozArticulatorJos = 0.2, pozRotatieGhearaJos = 0.185;
     public FunctiiDeProgram() {
     }
 
@@ -54,6 +54,9 @@ public class FunctiiDeProgram {
         sliderL = hardwareMap.get(DcMotorEx.class, "sliderL");
         sliderR = hardwareMap.get(DcMotorEx.class, "sliderR");
 
+        agatareL = hardwareMap.get(DcMotorEx.class, "agatareL");
+        agatareR = hardwareMap.get(DcMotorEx.class, "agatareR");
+
         articulatieGherutaSus = hardwareMap.get(Servo.class, "artG");
         extindereR = hardwareMap.get(Servo.class, "extindereR");
         extindereL = hardwareMap.get(Servo.class, "extindereL");
@@ -73,11 +76,18 @@ public class FunctiiDeProgram {
         sliderL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         sliderR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
+        agatareL.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        agatareR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
         sliderR.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         sliderL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
         sliderL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         sliderR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        agatareL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        agatareR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
     }
 
     public void stop() {
@@ -119,6 +129,10 @@ public class FunctiiDeProgram {
     public synchronized void setSliderPower(double power){
         sliderR.setPower(power);
         sliderL.setPower(power);
+    }
+    public synchronized void setAgatarePower(double power){
+        agatareR.setPower(power);
+        agatareL.setPower(power);
     }
     public synchronized int getSliderLPosition(){
         return sliderL.getCurrentPosition();
@@ -323,7 +337,7 @@ public class FunctiiDeProgram {
 
     public void gardtogheara(){
         Thread t1 = new Thread(() -> {
-            pozArticulatorSus = 0.6;
+            pozArticulatorSus = 0.54;
             kdf(200);
             pozArm = 0.05;
         });
@@ -386,20 +400,20 @@ public class FunctiiDeProgram {
 
     public void initiala(){
         pozRotatieGhearaJos = 0.185;
-        pozArticulatorJos = 0.0;
+        pozArticulatorJos = 0.2;
         pozRotatie = 0.0;
     }
     public void samples(){
         pozRotatieGhearaJos = 0.18;
-        pozArticulatorJos = 0.04;
+        pozArticulatorJos = 0.2;
         pozRotatie = 0.35;
     }
     public void luat(){
         Thread t1 = new Thread(() -> {
             gherutaJos.setPosition(0.855);
             pozRotatieGhearaJos = 0.18;
-            pozArticulatorJos = 0.0;
-            pozRotatie = 0.54;
+            pozArticulatorJos = 0.2;
+            pozRotatie = 0.52;
             kdf(350);
             gherutaJos.setPosition(0.64);
         });
@@ -408,7 +422,7 @@ public class FunctiiDeProgram {
     public void luat_auto(){
         pozGherutaJos = 0.855;
         pozRotatieGhearaJos = 0.18;
-        pozArticulatorJos = 0.0;
+        pozArticulatorJos = 0.2;
         pozRotatie = 0.53;
         kdf_auto(700);
         pozGherutaJos = 0.64;
@@ -416,7 +430,7 @@ public class FunctiiDeProgram {
     public void intermediar(){
         gherutaJos.setPosition(0.64);
         pozRotatieGhearaJos = 0.18;
-        pozArticulatorJos = 0.05;
+        pozArticulatorJos = 0.2;
         pozRotatie = 0.45;
     }
     public void getSample(){
@@ -440,6 +454,7 @@ public class FunctiiDeProgram {
         long lastTime = System.currentTimeMillis();
         while (lastTime + t > System.currentTimeMillis() && opMode.opModeIsActive()) ;
     }
+
 
     public void setExtinderePoz() {
         switch (extensorState) {
