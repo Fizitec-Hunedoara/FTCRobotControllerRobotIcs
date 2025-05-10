@@ -23,5 +23,5 @@ public class autonom80 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry.addData("mda", "am facut 80 de puncte");
         telemetry.update();
-
+        waitForStart();
 }}

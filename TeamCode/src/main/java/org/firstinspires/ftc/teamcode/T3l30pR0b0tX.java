@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-@TeleOp
+//@TeleOp
 public class T3l30pR0b0tX extends OpMode {
     double sm = 1, lb = 1, rb = 1, sliderSlow = 1, intakePos = 0, rotitorPoz = 3, incheieturaPoz = 1;
     double y, x, rx;
